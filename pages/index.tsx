@@ -10,15 +10,21 @@ import Tool from './components/tool'
 //   StarFilled,
 // } from '@ant-design/icons'
 import { formatDate } from './utils'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Editor = dynamic(() => import('./components/editor'), { ssr: false })
 const { Item } = Timeline
 const { Ribbon } = Badge
 
 const Home = () => {
-  const arr = [1, 2, 3, 4]
-  const mock = [...arr, ...arr, ...arr].map(i => 'Create a services site')
+  const arr: any = [1, 2, 3]
+  const mock = [...arr].map(i => 'Create a services site')
+  const [t, setTime] = useState('')
+
+  useEffect(() => {
+    setTime(formatDate(+new Date()))
+  }, [])
+
   // const mock: any = []
   return (
     <div className="novel-map">
@@ -33,12 +39,12 @@ const Home = () => {
               <Item color="gray" key={k}>
                 <Ribbon text="Hippies" placement="start">
                   {/* title: ctime */}
-                  <Card
-                    className="novel-map__main-card"
-                    title={formatDate(+new Date())}
-                    size="small"
-                  >
-                    {_}
+                  <Card className="novel-map__main-card" title={t} size="small">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: _,
+                      }}
+                    />
                     <Tool />
                   </Card>
                 </Ribbon>

@@ -5,6 +5,9 @@
   "proseWrap": "never",
   "arrowParens": "avoid",
   "semi": false,
+  "disableLanguages": [
+    "vue"
+  ],
   "overrides": [
     {
       "files": ".prettierrc",
