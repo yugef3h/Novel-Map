@@ -8,14 +8,19 @@
     height: 100vh;
     &-info {
       position: absolute;
-      right: 20px;
-      top: 20px;
-      width: 45vw;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      background-color: #ffffff;
+      z-index: 9;
     }
     &-empty {
-      position: absolute;
-      left: 20px;
-      top: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     .ant-card {
       &-body {
@@ -47,7 +52,7 @@
 
     .ant-timeline {
       height: 100%;
-      padding: 32px 0 20px 20px;
+      padding: 32px 20px;
       overflow-y: auto;
       &-item-content {
         top: -12px;
@@ -67,16 +72,16 @@
       &[title='Monospace'],
       &[title='Superscript'],
       &[title='Subscript'],
-      &[title='Indent'],
-      &[title='Outdent'],
       &[title='Unlink'] {
         display: none;
       }
     }
     .rdw-fontsize-wrapper,
     .rdw-text-align-wrapper,
+    .rdw-fontfamily-wrapper,
     .rdw-embedded-wrapper,
     .rdw-remove-wrapper,
+    .rdw-list-wrapper,
     .rdw-emoji-wrapper {
       display: none;
     }
@@ -87,11 +92,37 @@
     }
   }
   &__editor {
+    &-wrapper {
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: block;
+        height: 100vh;
+        width: 100vw;
+        background-color: #ffffff;
+        z-index: -1;
+      }
+    }
     &-content {
-      border: 1px solid #1890ff;
+      border: 1px solid #f1f1f1;
       padding: 5px;
       border-radius: 3px;
       background-color: #e6f7ff99;
+      min-height: 400px;
+      max-height: 400px;
+    }
+    &-custom {
+      position: absolute;
+      right: 15px;
+    }
+    &-shortcut {
+      position: absolute;
+      top: 11px;
+      right: 130px;
     }
   }
 }
