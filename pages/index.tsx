@@ -18,7 +18,7 @@ const { Ribbon } = Badge
 
 const Home = () => {
   const arr: any = [1, 2, 3]
-  const mock = [...arr].map(i => 'Create a services site')
+  const mock = [...arr].map(() => 'Create a services site')
   const [t, setTime] = useState('')
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Home = () => {
                   <Card className="novel-map__main-card" title={t} size="small">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: _,
+                        __html: _
                       }}
                     />
                     <Tool />
@@ -56,7 +56,7 @@ const Home = () => {
             className="novel-map__main-empty"
             image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
             imageStyle={{
-              height: 60,
+              height: 60
             }}
             description={<span>我们的征途是星辰大海！</span>}
           />

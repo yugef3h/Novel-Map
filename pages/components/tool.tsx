@@ -5,7 +5,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   TagOutlined,
-  SisternodeOutlined,
+  SisternodeOutlined
 } from '@ant-design/icons'
 
 const Tool: FC<any> = () => {

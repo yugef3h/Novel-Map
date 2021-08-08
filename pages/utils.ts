@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 
 /**
  * 时间戳转换
- * @param t 
+ * @param t
  */
 export const formatDate = (t: number) => dayjs(t).format('YYYY-MM-DD HH:mm:ss')
 
