@@ -1,3 +1,4 @@
+import React from 'react'
 import './css/global.scss'
 import 'antd/dist/antd.css'
 import './css/home.scss'

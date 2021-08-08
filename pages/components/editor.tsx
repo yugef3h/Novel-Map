@@ -1,13 +1,13 @@
-import React, { useState, useEffect, FC, useCallback, Component, ReactElement } from 'react'
+import React, { useState, useEffect, FC, ReactElement } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, Modifier } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import htmlToDraft from 'html-to-draftjs'
+// import htmlToDraft from 'html-to-draftjs'
 import { CheckOutlined } from '@ant-design/icons'
-import { Button, Radio, Typography } from 'antd'
-
-const { Title, Paragraph, Text, Link } = Typography
+import { Button, Typography } from 'antd'
+// import styles from './Editor.module.css'
+const { Paragraph, Text } = Typography
 
 interface Custom {
   editorState?: EditorState
@@ -26,7 +26,7 @@ const CustomOption: FC<Custom> = ({ editorState, onChange }): ReactElement => {
       editorState.getCurrentContent(),
       editorState.getSelection(),
       '', // 添加在末尾
-      editorState.getCurrentInlineStyle(),
+      editorState.getCurrentInlineStyle()
     )
     onChange(EditorState.push(editorState, contentState, 'insert-characters'))
     // result
@@ -54,7 +54,7 @@ const CustomOption: FC<Custom> = ({ editorState, onChange }): ReactElement => {
  */
 const Draft: FC<any> = () => {
   const [iShow, setIshow] = useState(false)
-  const [editorState, setEditorState] = useState(EditorState.createEmpty())
+  const [_eState, setEditorState] = useState(EditorState.createEmpty())
 
   const onEditorStateChange = (editorState: any) => {
     setEditorState(editorState)
@@ -75,11 +75,11 @@ const Draft: FC<any> = () => {
               options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
               className: undefined,
               component: undefined,
-              dropdownClassName: undefined,
-            },
+              dropdownClassName: undefined
+            }
           }}
-          toolbarCustomButtons={[<CustomOption />]}
-          editorState={editorState}
+          toolbarCustomButtons={[<CustomOption key={'submit'} />]}
+          editorState={_eState}
           onEditorStateChange={onEditorStateChange}
         />
       )}
