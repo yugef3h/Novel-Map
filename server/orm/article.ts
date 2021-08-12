@@ -1,19 +1,19 @@
-import { Model, STRING, INTEGER, Sequelize, TEXT } from 'sequelize';
+import { Model, STRING, INTEGER, Sequelize, TEXT } from 'sequelize'
 
 class ArtPage extends Model {
-  public id!: number;
-  public title!: string;
-  public desc!: string;
-  public cover!: string;
-  public tags!: string;
-  public pid!: number;
-  public content!: string;
-  public state!: number;
-  public ctime!: string;
-  public mtime!: string;
+  public id!: number
+  public title!: string
+  public desc!: string
+  public cover!: string
+  public tags!: string
+  public pid!: number
+  public content!: string
+  public state!: number
+  public ctime!: string
+  public mtime!: string
 }
 
-export default ArtPage;
+export default ArtPage
 
 export function init(sequelize: Sequelize) {
   return ArtPage.init(
@@ -22,7 +22,7 @@ export function init(sequelize: Sequelize) {
         type: INTEGER().UNSIGNED,
         autoIncrement: true,
         comment: '自增id',
-        primaryKey: true,
+        primaryKey: true
       },
       pid: {
         type: INTEGER().UNSIGNED,
@@ -34,7 +34,7 @@ export function init(sequelize: Sequelize) {
         type: INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '-1 删除，1 已发布，2 草稿',
+        comment: '-1 删除，1 已发布，2 草稿'
       },
       cover: {
         type: STRING(255),
@@ -72,7 +72,7 @@ export function init(sequelize: Sequelize) {
       createdAt: 'ctime',
       updatedAt: 'mtime',
       deletedAt: false,
-      paranoid: false,
+      paranoid: false
     }
-  );
+  )
 }
