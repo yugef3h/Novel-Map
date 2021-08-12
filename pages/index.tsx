@@ -10,18 +10,30 @@ import Tool from './components/tool'
 //   StarFilled,
 // } from '@ant-design/icons'
 import { formatDate } from './utils'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { baseUrl } from './constant'
+import { connect } from 'react-redux'
 
 const Editor = dynamic(() => import('./components/editor'), { ssr: false })
 const { Item } = Timeline
 const { Ribbon } = Badge
 
-const Home = () => {
-  const arr: any = [1, 2, 3]
+const Home = (): ReactElement => {
+  const arr = [1, 2, 3]
   const mock = [...arr].map(() => 'Create a services site')
   const [t, setTime] = useState('')
 
   useEffect(() => {
+    fetch(`${baseUrl}/api/v1/article/query_list`)
+      .then(res => res.json())
+      .then(
+        result => {
+          console.log(result)
+        },
+        err => {
+          console.log(err)
+        }
+      )
     setTime(formatDate(+new Date()))
   }, [])
 
@@ -37,7 +49,31 @@ const Home = () => {
           <Timeline>
             {mock.map((_: string, k: number) => (
               <Item color="gray" key={k}>
-                <Ribbon text="Hippies" placement="start">
+                <Ribbon text="Hippies" placement="start" color="#1890ff">
+                  {/* title: ctime */}
+                  <Card className="novel-map__main-card" title={t} size="small">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: _
+                      }}
+                    />
+                    <Tool />
+                  </Card>
+                </Ribbon>
+                <div className="first-child-line"></div>
+                <Ribbon text="Hippies" placement="start" color="#69c0ff">
+                  {/* title: ctime */}
+                  <Card className="novel-map__main-card" title={t} size="small">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: _
+                      }}
+                    />
+                    <Tool />
+                  </Card>
+                </Ribbon>
+                <div className="second-child-line"></div>
+                <Ribbon text="Hippies" placement="start" color="#bae7ff">
                   {/* title: ctime */}
                   <Card className="novel-map__main-card" title={t} size="small">
                     <div
@@ -70,4 +106,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default connect()(Home)

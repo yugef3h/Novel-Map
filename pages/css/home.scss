@@ -49,17 +49,36 @@
         }
       }
     }
-
+    .first-child-line {
+      height: 50px;
+      width: 2px;
+      margin-left: calc(15vw + 30px);
+      background-color: #f0f0f0;
+    }
+    .second-child-line {
+      height: 50px;
+      width: 2px;
+      margin-left: calc(30vw + 30px);
+      background-color: #f0f0f0;
+    }
+    .ant-ribbon-wrapper {
+      width: 45vw;
+    }
     .ant-timeline {
       height: 100%;
       padding: 32px 20px;
       overflow-y: auto;
       &-item-content {
         top: -12px;
+        .ant-ribbon-wrapper {
+          &:nth-of-type(3) {
+            margin-left: 15vw;
+          }
+          &:nth-of-type(5) {
+            margin-left: 30vw;
+          }
+        }
       }
-    }
-    .ant-ribbon-wrapper {
-      width: 45vw;
     }
     .ant-card-head-title {
       text-align: right;
@@ -72,6 +91,7 @@
       &[title='Monospace'],
       &[title='Superscript'],
       &[title='Subscript'],
+      &[title='Underline'],
       &[title='Unlink'] {
         display: none;
       }
@@ -82,6 +102,9 @@
     .rdw-embedded-wrapper,
     .rdw-remove-wrapper,
     .rdw-list-wrapper,
+    .rdw-history-wrapper,
+    .rdw-image-wrapper,
+    .rdw-block-wrapper,
     .rdw-emoji-wrapper {
       display: none;
     }
@@ -105,11 +128,13 @@
         width: 100vw;
         background-color: #ffffff;
         z-index: -1;
+        pointer-events: none;
+        cursor: default;
       }
     }
     &-content {
       border: 1px solid #f1f1f1;
-      padding: 5px;
+      padding: 5px 16px;
       border-radius: 3px;
       background-color: #e6f7ff99;
       min-height: 400px;
@@ -122,7 +147,7 @@
     &-shortcut {
       position: absolute;
       top: 11px;
-      right: 130px;
+      right: 100px;
     }
   }
 }
