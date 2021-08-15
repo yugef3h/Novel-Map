@@ -1,43 +1,41 @@
 import Head from 'next/head'
 // import { useState, useEffect } from 'react'
 // import cx from 'classnames'
-import { Timeline, Empty, Badge, Card } from 'antd'
+import { Timeline, Empty, Badge, Card, message } from 'antd'
 import dynamic from 'next/dynamic'
-import Tool from './components/tool'
-// import {
-//   ClockCircleOutlined,
-//   CheckCircleFilled,
-//   StarFilled,
-// } from '@ant-design/icons'
-import { formatDate } from './utils'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { baseUrl } from './constant'
+import HotKey from './components/hotkey'
+import React, { ReactElement, useEffect, useState, FC } from 'react'
+import { baseUrl, Custom } from './constant'
 import { connect } from 'react-redux'
+import { mapDispatchToProps, mapStateToProps } from './store'
+import { formatDate } from './utils'
 
 const Editor = dynamic(() => import('./components/editor'), { ssr: false })
+const Tool = dynamic(() => import('./components/tool'), { ssr: false })
 const { Item } = Timeline
 const { Ribbon } = Badge
 
-const Home = (): ReactElement => {
-  const arr = [1, 2, 3]
-  const mock = [...arr].map(() => 'Create a services site')
-  const [t, setTime] = useState('')
+const Home: FC<Custom> = (props): ReactElement => {
+  const { canShow } = props.editor || {}
+  const [artList, setArtList] = useState([])
 
   useEffect(() => {
+    if (canShow) return
     fetch(`${baseUrl}/api/v1/article/query_list`)
       .then(res => res.json())
       .then(
-        result => {
-          console.log(result)
+        r => {
+          if (+r.code !== 0) return message.warning(r?.message)
+          setArtList(r.data)
         },
         err => {
           console.log(err)
         }
       )
-    setTime(formatDate(+new Date()))
-  }, [])
+  }, [canShow])
 
-  // const mock: any = []
+  const t = formatDate(+new Date())
+
   return (
     <div className="novel-map">
       <Head>
@@ -45,43 +43,43 @@ const Home = (): ReactElement => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="novel-map__main">
-        {mock.length ? (
+        {artList.length ? (
           <Timeline>
-            {mock.map((_: string, k: number) => (
+            {artList.map((_: any, k: number) => (
               <Item color="gray" key={k}>
-                <Ribbon text="Hippies" placement="start" color="#1890ff">
+                <Ribbon text={_.title} placement="start" color="#1890ff">
                   {/* title: ctime */}
-                  <Card className="novel-map__main-card" title={t} size="small">
+                  <Card className="novel-map__main-card" title={_.mtime || t} size="small">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: _
+                        __html: _.content
                       }}
                     />
-                    <Tool />
+                    <Tool item={_} />
                   </Card>
                 </Ribbon>
                 <div className="first-child-line"></div>
                 <Ribbon text="Hippies" placement="start" color="#69c0ff">
                   {/* title: ctime */}
-                  <Card className="novel-map__main-card" title={t} size="small">
+                  <Card className="novel-map__main-card" title={_.mtime || t} size="small">
                     <div
                       dangerouslySetInnerHTML={{
                         __html: _
                       }}
                     />
-                    <Tool />
+                    <Tool item={_} />
                   </Card>
                 </Ribbon>
                 <div className="second-child-line"></div>
                 <Ribbon text="Hippies" placement="start" color="#bae7ff">
                   {/* title: ctime */}
-                  <Card className="novel-map__main-card" title={t} size="small">
+                  <Card className="novel-map__main-card" title={_.mtime || t} size="small">
                     <div
                       dangerouslySetInnerHTML={{
                         __html: _
                       }}
                     />
-                    <Tool />
+                    <Tool item={_} />
                   </Card>
                 </Ribbon>
               </Item>
@@ -100,10 +98,11 @@ const Home = (): ReactElement => {
         <div className="novel-map__main-info">
           <Editor />
         </div>
+        <HotKey />
       </main>
       <footer />
     </div>
   )
 }
 
-export default connect()(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

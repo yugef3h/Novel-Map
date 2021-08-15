@@ -1,13 +1,5 @@
 import articleOrm from '../../orm/article'
 
-export const queryArticleList = (pid: number | number[]) => {
-  return articleOrm.findAll({
-    where: {
-      pid
-    }
-  })
-}
-
 interface ArtItem {
   id: number
   title: string
@@ -18,6 +10,24 @@ interface ArtItem {
   cover?: string
   tags?: string
 }
-export const createArticle = (params: Omit<ArtItem, 'id'>) => {
+
+export const queryArticleList = (params?: { level: number }): Promise<articleOrm[]> => {
+  return articleOrm.findAll({
+    where: {
+      level: params?.level || 0
+    }
+  })
+}
+
+export const createArticle = (params: Omit<ArtItem, 'id'>): Promise<any> => {
   return articleOrm.create(params)
+}
+
+export const editArticle = (params: ArtItem): Promise<any> => {
+  const { id, ...data } = params
+  return articleOrm.update(data, {
+    where: {
+      id
+    }
+  })
 }
