@@ -1,8 +1,8 @@
 import { Response, Request } from 'express'
-import { queryArticleList, createArticle } from '../model/article'
+import { queryArticleList, createArticle, editArticle } from '../model/article'
 
 export function getList(req: Request, res: Response): void {
-  queryArticleList(0).then(data => {
+  queryArticleList().then(data => {
     res.status(200).send({
       code: 0,
       data,
@@ -13,7 +13,7 @@ export function getList(req: Request, res: Response): void {
 
 const DEFAULT_FIELD = 'empty'
 
-export async function create(req: Request, res: Response) {
+export async function create(req: Request, res: Response): Promise<void> {
   const { title = DEFAULT_FIELD, content = DEFAULT_FIELD } = req.body
   const params = {
     title,
@@ -21,9 +21,35 @@ export async function create(req: Request, res: Response) {
     state: 1,
     pid: 0
   }
-  await createArticle(params)
+  let msg = 'success'
+  try {
+    await createArticle(params)
+  } catch (e) {
+    msg = JSON.stringify(e)
+  }
   res.status(200).send({
     code: 0,
-    msg: 'success'
+    msg
+  })
+}
+
+export async function edit(req: Request, res: Response): Promise<void> {
+  const { title = DEFAULT_FIELD, content = DEFAULT_FIELD, id } = req.body
+  const params = {
+    title,
+    content,
+    state: 1,
+    pid: 0,
+    id
+  }
+  let msg = 'success'
+  try {
+    await editArticle(params)
+  } catch (e) {
+    msg = JSON.stringify(e)
+  }
+  res.status(200).send({
+    code: 0,
+    msg
   })
 }

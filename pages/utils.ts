@@ -10,3 +10,8 @@ export const formatDate = (t: number): string => dayjs(t).format('YYYY-MM-DD HH:
  * 苹果设备
  */
 export const isAppleDevice = (): boolean => /(mac|iphone|ipod|ipad)/i.test(navigator.platform)
+
+export default {
+  formatDate,
+  isAppleDevice
+}

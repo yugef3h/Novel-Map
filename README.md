@@ -18,10 +18,6 @@ function Avatar() {
 export default Avatar
 ```
 
-## getInitialProps
-
-[getInitialProps](https://www.nextjs.cn/docs/api-reference/data-fetching/getInitialProps)
-
 ## 全文搜索
 
 mysql 修改分词长度：
