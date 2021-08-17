@@ -15,6 +15,9 @@
       background-color: #ffffff;
       z-index: 9;
     }
+    &-card {
+      background-color: #faf5eb;
+    }
     &-empty {
       height: 100vh;
       display: flex;
@@ -53,13 +56,13 @@
       }
     }
     .first-child-line {
-      height: 50px;
+      height: 40px;
       width: 2px;
       margin-left: calc(15vw + 30px);
       background-color: #f0f0f0;
     }
     .second-child-line {
-      height: 50px;
+      height: 40px;
       width: 2px;
       margin-left: calc(30vw + 30px);
       background-color: #f0f0f0;
@@ -67,9 +70,16 @@
     .ant-ribbon-wrapper {
       width: 45vw;
     }
+    .ant-card-head {
+      border-bottom: none;
+    }
     .ant-ribbon-placement-start,
     .ant-card-head-title {
       cursor: default;
+    }
+    .rdw-editor-toolbar .ant-tag {
+      line-height: 23px;
+      font-weight: 500;
     }
     .ant-timeline {
       height: 100%;
@@ -153,6 +163,10 @@
     &-custom {
       position: absolute;
       right: 15px;
+    }
+    &-tags {
+      position: absolute;
+      top: -30px;
     }
     &-shortcut {
       position: absolute;

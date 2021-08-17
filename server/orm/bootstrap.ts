@@ -1,28 +1,24 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from 'sequelize'
 import { init as initArtPageModel } from './article'
 
 export interface DbConfig {
-  host: string;
-  port: number;
-  user: string;
-  password: string;
-  database: string;
+  host: string
+  port: number
+  user: string
+  password: string
+  database: string
 }
 
 type Ins = {
-  [prop: string]: any
+  [prop: string]: Sequelize
 }
 
-export const instances: Ins = {
-  article: undefined,
-};
+export const instances: Ins = {}
 
 const defaultResource = 'article'
 
 async function getDB(resource = defaultResource): Promise<Sequelize> {
-  if (instances[resource]) {
-    return instances[resource];
-  }
+  if (instances[resource]) return instances[resource]
   const conf: DbConfig = {
     host: '127.0.0.1',
     port: 3306,
@@ -37,15 +33,15 @@ async function getDB(resource = defaultResource): Promise<Sequelize> {
     username: conf.user,
     password: conf.password,
     database: conf.database,
-    logging: () => null,
-  });
-  instances[resource] = orm;
+    logging: () => null
+  })
+  instances[resource] = orm
   if (resource === defaultResource) {
-    initArtPageModel(orm);
+    initArtPageModel(orm)
   }
-  return orm;
+  return orm
 }
 
-export default function bootstrap() {
-  return Promise.all([getDB(defaultResource)]);
+export default function bootstrap(): Promise<Sequelize[]> {
+  return Promise.all([getDB(defaultResource)])
 }

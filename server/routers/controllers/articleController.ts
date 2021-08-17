@@ -2,7 +2,7 @@ import { Response, Request } from 'express'
 import { queryArticleList, createArticle, editArticle } from '../model/article'
 
 export function getList(req: Request, res: Response): void {
-  queryArticleList().then(data => {
+  queryArticleList().then((data: any) => {
     res.status(200).send({
       code: 0,
       data,
@@ -14,12 +14,13 @@ export function getList(req: Request, res: Response): void {
 const DEFAULT_FIELD = 'empty'
 
 export async function create(req: Request, res: Response): Promise<void> {
-  const { title = DEFAULT_FIELD, content = DEFAULT_FIELD } = req.body
+  const { title = DEFAULT_FIELD, content = DEFAULT_FIELD, pid = 0, level = 0 } = req.body
   const params = {
     title,
     content,
     state: 1,
-    pid: 0
+    pid,
+    level
   }
   let msg = 'success'
   try {

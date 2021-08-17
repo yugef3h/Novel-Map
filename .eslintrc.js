@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
     es6: true,
-    node: true,
+    node: true
   },
   extends: [
     'eslint:recommended',
@@ -12,15 +12,15 @@ module.exports = {
     'prettier',
     'standard',
     'plugin:import/typescript',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true,
+      jsx: true
     },
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: 'module'
   },
   plugins: ['react', '@typescript-eslint', 'react-hooks', 'prettier'],
   rules: {
@@ -79,5 +79,6 @@ module.exports = {
     '@typescript-eslint/no-shadow': [2, { ignoreTypeValueShadow: true }],
     // https://github.com/typescript-eslint/typescript-eslint/issues/2528#issuecomment-689369395
     'no-undef': 0,
-  },
+    'no-unused-vars': 'off'
+  }
 }

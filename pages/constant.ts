@@ -5,11 +5,13 @@ export const baseUrl = 'http://localhost:8081'
 export interface Custom {
   editor?: Partial<EditorItem>
   setCanShow?: any
-  setEditor?: any
-  initEditor?: any
+  setContent?: any
+  initContent?: any
   setTitle?: any
-  id?: number
+  setLevel?: any
+  setMode?: any
   setId: any
+  setPId: any
 }
 
 export interface Action<T> {
