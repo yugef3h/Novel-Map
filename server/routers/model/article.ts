@@ -9,6 +9,7 @@ export interface ArtItem {
   desc?: string
   cover?: string
   tags?: string
+  level?: number
 }
 
 const artField = [

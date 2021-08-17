@@ -10,19 +10,15 @@ export interface DbConfig {
 }
 
 type Ins = {
-  [prop: string]: any
+  [prop: string]: Sequelize
 }
 
-export const instances: Ins = {
-  article: undefined
-}
+export const instances: Ins = {}
 
 const defaultResource = 'article'
 
 async function getDB(resource = defaultResource): Promise<Sequelize> {
-  if (instances[resource]) {
-    return instances[resource]
-  }
+  if (instances[resource]) return instances[resource]
   const conf: DbConfig = {
     host: '127.0.0.1',
     port: 3306,
@@ -46,6 +42,6 @@ async function getDB(resource = defaultResource): Promise<Sequelize> {
   return orm
 }
 
-export default function bootstrap() {
+export default function bootstrap(): Promise<Sequelize[]> {
   return Promise.all([getDB(defaultResource)])
 }

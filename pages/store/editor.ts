@@ -2,49 +2,102 @@
 import { Action } from '../constant'
 import { EditorState } from 'draft-js'
 
+export enum FormMode {
+  Create = 1,
+  Edit
+}
+
+export const FormModeMap = new Map([
+  [FormMode.Create, '新建'],
+  [FormMode.Edit, '编辑']
+])
 export interface EditorItem {
-  title: string
-  content: EditorState
   canShow: boolean
-  id: number | undefined
+  mode: FormMode
+  artItem: {
+    id: number | undefined
+    level: number
+    title: string
+    content: EditorState
+    pid: number | undefined
+  }
 }
 
 export const defaultState: EditorItem = {
-  title: '',
-  content: EditorState.createEmpty(),
   canShow: false,
-  id: undefined
+  mode: FormMode.Create,
+  artItem: {
+    id: undefined,
+    level: 0,
+    title: '',
+    content: EditorState.createEmpty(),
+    pid: undefined
+  }
 }
 
 export const actionType: { [p: string]: string } = {
-  initEditor: 'INIT_EDITOR',
-  setEditor: 'SET_EDITOR',
+  initContent: 'INIT_EDITOR',
+  setContent: 'SET_EDITOR',
   setTitle: 'SET_TITLE',
   setCanShow: 'SET_CAN_SHOW',
-  setId: 'SET_ID'
+  setId: 'SET_ID',
+  setLevel: 'SET_LEVEL',
+  setMode: 'SET_MODE',
+  setPId: 'SET_PID'
 }
 
 export default (state = defaultState, action: Action<any>): EditorItem => {
   switch (action.type) {
-    case actionType.initEditor:
+    case actionType.initContent:
       return Object.assign({}, state, {
-        content: EditorState.createEmpty()
+        artItem: {
+          ...state.artItem,
+          content: EditorState.createEmpty()
+        }
       })
-    case actionType.setEditor:
+    case actionType.setContent:
       return Object.assign({}, state, {
-        content: action.payload
+        artItem: {
+          ...state.artItem,
+          content: action.payload
+        }
       })
-    case actionType.setTitle:
+    case actionType.setTitle: {
       return Object.assign({}, state, {
-        title: action.payload
+        artItem: {
+          ...state.artItem,
+          title: action.payload
+        }
       })
+    }
     case actionType.setCanShow:
       return Object.assign({}, state, {
         canShow: !state.canShow
       })
     case actionType.setId:
       return Object.assign({}, state, {
-        id: action.payload
+        artItem: {
+          ...state.artItem,
+          id: action.payload
+        }
+      })
+    case actionType.setPId:
+      return Object.assign({}, state, {
+        artItem: {
+          ...state.artItem,
+          pid: action.payload
+        }
+      })
+    case actionType.setLevel:
+      return Object.assign({}, state, {
+        artItem: {
+          ...state.artItem,
+          level: action.payload
+        }
+      })
+    case actionType.setMode:
+      return Object.assign({}, state, {
+        mode: action.payload
       })
     default:
       return state

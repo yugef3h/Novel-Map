@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import * as articleController from '../controllers/article'
+import * as articleController from '../controllers/articleController'
 
 const apiRouter = Router()
 apiRouter.get('/article/query_list', articleController.getList)

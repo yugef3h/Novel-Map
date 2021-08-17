@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react'
+import React, { FC, ReactElement, useMemo } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, Modifier } from 'draft-js'
@@ -7,6 +7,7 @@ import { Button, Input, message, Tag } from 'antd'
 import { baseUrl, Custom } from '../constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from '../store'
+import { FormModeMap } from '../store/editor'
 
 /**
  * 自定义 toolbar
@@ -14,8 +15,11 @@ import { mapDispatchToProps, mapStateToProps } from '../store'
  */
 export const CustomOption: FC<any> = (props): ReactElement => {
   const { onChange, editorState, childProps } = props
-  const { initEditor, setCanShow, setTitle, editor } = childProps
-  const { title = '', id } = editor || {}
+  const { initContent, setCanShow, setTitle, editor } = childProps
+  const { mode, artItem } = editor || {}
+  const { title = '', id, level = 0, pid } = artItem || {}
+  const modeText = useMemo(() => FormModeMap.get(mode), [mode])
+
   if (!editorState) return <></>
 
   const addSubmitBtn = () => {
@@ -43,7 +47,9 @@ export const CustomOption: FC<any> = (props): ReactElement => {
         }
       : {
           title,
-          content: html
+          content: html,
+          pid,
+          level
         }
     fetch(url, {
       method: 'POST',
@@ -60,7 +66,7 @@ export const CustomOption: FC<any> = (props): ReactElement => {
           message.success('段落添加成功！')
           setCanShow()
           setTitle('')
-          initEditor()
+          initContent()
         },
         err => {
           message.error(JSON.stringify(err))
@@ -74,7 +80,11 @@ export const CustomOption: FC<any> = (props): ReactElement => {
 
   return (
     <>
-      {id && <Tag color="magenta">当前有挂名 Id: {id}</Tag>}
+      <div className="novel-map__editor-tags">
+        <Tag color="blue">{modeText}中</Tag>
+        {id && <Tag color="magenta">当前 Id: {id}</Tag>}
+        {level > 0 && <Tag color="magenta">当前有挂名 Id: {pid}</Tag>}
+      </div>
       <div className="novel-map__editor-custom" onClick={addSubmitBtn}>
         <Button type="primary" shape="round">
           Submit
@@ -96,10 +106,11 @@ export const CustomOption: FC<any> = (props): ReactElement => {
  * func 清空，赋值，提交，focus
  */
 const Draft: FC<Partial<Custom>> = (props): ReactElement => {
-  const { editor, setEditor } = props
-  const { canShow, content } = editor || {}
+  const { editor, setContent } = props
+  const { canShow, artItem } = editor || {}
+  const { content } = artItem || {}
   const onEditorStateChange = (editorState: EditorState) => {
-    setEditor(editorState)
+    setContent(editorState)
   }
 
   return (
