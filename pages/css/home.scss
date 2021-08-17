@@ -15,6 +15,9 @@
       background-color: #ffffff;
       z-index: 9;
     }
+    &-card {
+      background-color: #faf5eb;
+    }
     &-empty {
       height: 100vh;
       display: flex;
@@ -67,9 +70,15 @@
     .ant-ribbon-wrapper {
       width: 45vw;
     }
+    .ant-card-head {
+      border-bottom: none;
+    }
     .ant-ribbon-placement-start,
     .ant-card-head-title {
       cursor: default;
+    }
+    .rdw-editor-toolbar .ant-tag-magenta {
+      line-height: 23px;
     }
     .ant-timeline {
       height: 100%;

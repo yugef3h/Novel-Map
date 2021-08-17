@@ -13,10 +13,11 @@
     "commit": "git cz"
   },
   "dependencies": {
+    "@types/bluebird": "^3.5.36",
     "@types/draftjs-to-html": "^0.8.1",
     "@types/html-to-draftjs": "^1.4.0",
     "@types/react-draft-wysiwyg": "^1.13.3",
-    "@types/sequelize": "^4.28.10",
+    "@types/sequelize": "^4.28.8",
     "antd": "^4.16.9",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
@@ -42,8 +43,7 @@
     "react-redux": "^7.2.4",
     "redux": "^4.1.1",
     "sass": "^1.36.0",
-    "sequelize": "^6.6.5",
-    "sequelize-typescript": "^2.1.0",
+    "sequelize": "5.21.5",
     "ts-node": "^10.1.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"

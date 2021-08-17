@@ -5,9 +5,10 @@ import React, { ReactElement } from 'react'
 import { Custom } from '../constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from '../store'
+import { EditorState } from 'draft-js'
 
 const hotkey = (props: Partial<Custom>): ReactElement => {
-  const { setCanShow, editor, setId } = props
+  const { setCanShow, editor, setId, setTitle, setEditor } = props
   const onKeyDown = (keyName: string) => {
     switch (keyName) {
       case 'option+e':
@@ -20,6 +21,8 @@ const hotkey = (props: Partial<Custom>): ReactElement => {
         if (canShow) {
           setCanShow()
           setId(undefined)
+          setTitle('')
+          setEditor(EditorState.createEmpty())
         }
       }
     }

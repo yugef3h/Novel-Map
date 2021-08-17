@@ -12,11 +12,15 @@ import {
   SisternodeOutlined
 } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs'
+import { ArtItem } from '../../server/routers/model/article'
+import { Custom } from '../constant'
 
-const Tool: FC<any> = props => {
+type ToolProps = Partial<Custom & { item: ArtItem }>
+
+const Tool: FC<ToolProps> = props => {
   const { setCanShow, editor, setTitle, item, setEditor, setId } = props
   const { canShow } = editor || {}
-  const { content: serverContent, title, id } = item
+  const { content: serverContent, title, id } = item || {}
   const toolCx = cx('novel-map__tool', {
     'tool-hidden': canShow
   })
@@ -25,12 +29,17 @@ const Tool: FC<any> = props => {
     setCanShow()
     setTitle(title)
     setId(id)
+    if (!serverContent) return
     const contentBlock = htmlToDraft(serverContent)
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
       const editorState = EditorState.createWithContent(contentState)
       setEditor(editorState)
     }
+  }
+
+  const append = () => {
+    setCanShow()
   }
 
   return (
@@ -47,7 +56,7 @@ const Tool: FC<any> = props => {
       </span> */}
       <span>
         <Tooltip placement="top" title={'插入子节点'}>
-          <SisternodeOutlined className={'novel-map__tool-icon'} />
+          <SisternodeOutlined className={'novel-map__tool-icon'} onClick={append} />
         </Tooltip>
       </span>
       <span>

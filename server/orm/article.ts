@@ -11,6 +11,7 @@ class ArtPage extends Model {
   public state!: number
   public ctime!: string
   public mtime!: string
+  public level!: number
 }
 
 export default ArtPage
@@ -61,6 +62,12 @@ export const modelItem = {
     allowNull: false,
     defaultValue: '',
     comment: '内容，格式：html'
+  },
+  level: {
+    type: INTEGER,
+    allowNull: true,
+    defaultValue: 0,
+    comment: 'tree 层级'
   }
 }
 

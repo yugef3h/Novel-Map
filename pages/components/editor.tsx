@@ -3,12 +3,10 @@ import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, Modifier } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { Button, Input, message, Typography } from 'antd'
+import { Button, Input, message, Tag } from 'antd'
 import { baseUrl, Custom } from '../constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from '../store'
-
-const { Paragraph, Text } = Typography
 
 /**
  * 自定义 toolbar
@@ -76,9 +74,7 @@ export const CustomOption: FC<any> = (props): ReactElement => {
 
   return (
     <>
-      <Paragraph className="novel-map__editor-shortcut">
-        <Text keyboard>⌘ + enter</Text>
-      </Paragraph>
+      {id && <Tag color="magenta">当前有挂名 Id: {id}</Tag>}
       <div className="novel-map__editor-custom" onClick={addSubmitBtn}>
         <Button type="primary" shape="round">
           Submit

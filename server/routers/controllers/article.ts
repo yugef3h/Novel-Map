@@ -2,7 +2,7 @@ import { Response, Request } from 'express'
 import { queryArticleList, createArticle, editArticle } from '../model/article'
 
 export function getList(req: Request, res: Response): void {
-  queryArticleList().then(data => {
+  queryArticleList().then((data: any) => {
     res.status(200).send({
       code: 0,
       data,
