@@ -1,14 +1,71 @@
 import { Response, Request } from 'express'
-import { queryArticleList, createArticle, editArticle } from '../model/article'
+import {
+  queryArticleList,
+  createArticle,
+  editArticle,
+  queryArtChildren,
+  ArtItem
+} from '../model/article'
 
 export function getList(req: Request, res: Response): void {
-  queryArticleList().then((data: any) => {
+  const { pn: pageIndex = 1, ps: pageSize = 10, tree_limit: treeLimit = 3 } = req.query
+  console.log(treeLimit)
+  queryArticleList(req).then(async (data: any) => {
+    const promises = data.rows.map((r: ArtItem) => {
+      const { level = 0, extra = '' } = r || {}
+      if (!extra) return Promise.resolve([])
+      if (JSON.parse(extra)?.haveChild || false) return Promise.resolve([])
+      return queryArtChildren({
+        level: Number(level) + 1,
+        pid: r.id
+      })
+    })
+    const result = await Promise.all(promises)
+
     res.status(200).send({
       code: 0,
-      data,
+      data: {
+        list: data.rows || [],
+        tree: result,
+        pageIndex: +pageIndex,
+        pageSize: +pageSize,
+        count: data.count
+      },
       msg: 'success'
     })
   })
+}
+
+type ExtraInfo = {
+  id: number
+  extra: {
+    haveChild: boolean
+  }
+}
+
+const queryArtById = queryArtChildren
+
+async function updateExtraInfo(params: Partial<ExtraInfo>) {
+  const { id, extra: newExtra } = params
+  let msg = 'updateExtraInfo:success'
+  try {
+    const data = await queryArtById({
+      id
+    })
+    const res = JSON.parse(JSON.stringify(data))
+    const { extra } = res?.[0] || {}
+    const oldExtra = extra === '' ? {} : JSON.parse(extra)
+    await editArticle({
+      ...(res?.[0] || {}),
+      extra: JSON.stringify({
+        ...oldExtra,
+        newExtra
+      })
+    })
+  } catch (e) {
+    msg = 'updateExtraInfo:' + JSON.stringify(e)
+  }
+  console.log(msg)
 }
 
 const DEFAULT_FIELD = 'empty'
@@ -26,8 +83,15 @@ export async function create(req: Request, res: Response): Promise<void> {
   try {
     await createArticle(params)
   } catch (e) {
-    msg = JSON.stringify(e)
+    msg = 'createArticle:' + JSON.stringify(e)
   }
+  // 更新父节点的额外信息，优化查询
+  updateExtraInfo({
+    id: pid,
+    extra: {
+      haveChild: true
+    }
+  })
   res.status(200).send({
     code: 0,
     msg
@@ -47,7 +111,7 @@ export async function edit(req: Request, res: Response): Promise<void> {
   try {
     await editArticle(params)
   } catch (e) {
-    msg = JSON.stringify(e)
+    msg = 'editArticle:' + JSON.stringify(e)
   }
   res.status(200).send({
     code: 0,

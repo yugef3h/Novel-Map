@@ -10,6 +10,10 @@ export interface ArtItem {
   cover?: string
   tags?: string
   level?: number
+  extra?: string // 不对前端暴露
+  children?: any[]
+  mtime?: string
+  ctime?: string
 }
 
 const artField = [
@@ -23,15 +27,28 @@ const artField = [
   'state',
   'desc',
   'ctime',
-  'mtime'
+  'mtime',
+  'extra'
 ]
 
-export const queryArticleList = (params?: { level: number }): any => {
+export const queryArtChildren = (params: any): any => {
   return articleOrm.findAll({
     attributes: artField,
-    where: {
-      level: params?.level || 0
-    }
+    where: params
+  })
+}
+
+export const queryArticleList = (req: any): any => {
+  const { pn: pageIndex, ps: pageSize, level } = req.query
+  const queryWhere: any = {}
+  if (level !== undefined) {
+    queryWhere.level = +level
+  }
+  return articleOrm.findAndCountAll({
+    attributes: artField,
+    limit: +pageSize,
+    offset: (+pageIndex - 1) * +pageSize,
+    where: queryWhere
   })
 }
 
