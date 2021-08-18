@@ -55,17 +55,32 @@
         }
       }
     }
-    .first-child-line {
-      height: 40px;
-      width: 2px;
-      margin-left: calc(15vw + 30px);
-      background-color: #f0f0f0;
+    .child-tree-1 {
+      margin-left: 12vw;
     }
-    .second-child-line {
+    .child-tree-2 {
+      margin-left: 24vw;
+    }
+    .child-tree-3 {
+      margin-left: 36vw;
+    }
+    .child-tree-4 {
+      margin-left: 48vw;
+    }
+    .child-tree-5 {
+      margin-left: 60vw;
+    }
+    .child-tree-6 {
+      margin-left: 72vw;
+    }
+    .child-line {
       height: 40px;
-      width: 2px;
-      margin-left: calc(30vw + 30px);
-      background-color: #f0f0f0;
+      width: 1px;
+      margin-left: 30px;
+      background-color: #dfe1e6;
+    }
+    .ant-timeline-item-tail {
+      border-left: 1px solid #dfe1e6;
     }
     .ant-ribbon-wrapper {
       width: 45vw;
@@ -81,23 +96,18 @@
       line-height: 23px;
       font-weight: 500;
     }
+    .rdw-editor-main {
+      font-size: 20px;
+    }
+    .public-DraftStyleDefault-block {
+      margin: 0.5rem 0;
+    }
     .ant-timeline {
       height: 100%;
       padding: 32px 20px;
       overflow-y: auto;
       &-item-content {
         top: -12px;
-        .ant-ribbon-wrapper {
-          &:nth-of-type(3) {
-            margin-left: 15vw;
-          }
-          &:nth-of-type(5) {
-            margin-left: 30vw;
-            .novel-map__tool {
-              display: none;
-            }
-          }
-        }
       }
     }
     .ant-card-head-title {
@@ -156,7 +166,7 @@
       border: 1px solid #f1f1f1;
       padding: 5px 16px;
       border-radius: 3px;
-      background-color: #e6f7ff99;
+      background-color: #faf5eb;
       min-height: 400px;
       max-height: 400px;
     }

@@ -12,6 +12,7 @@ class ArtPage extends Model {
   public ctime!: string
   public mtime!: string
   public level!: number
+  public extra!: string
 }
 
 export default ArtPage
@@ -40,6 +41,12 @@ export const modelItem = {
     allowNull: true,
     defaultValue: '',
     comment: '缺省'
+  },
+  extra: {
+    type: STRING(255),
+    allowNull: true,
+    defaultValue: '',
+    comment: '额外字段，不暴露给前端'
   },
   tags: {
     type: STRING(255),

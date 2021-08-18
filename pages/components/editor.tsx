@@ -1,7 +1,7 @@
-import React, { FC, ReactElement, useMemo } from 'react'
+import React, { FC, ReactElement, useMemo, useEffect } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { EditorState, convertToRaw, Modifier } from 'draft-js'
+import { EditorState, convertToRaw, Modifier, SelectionState } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { Button, Input, message, Tag } from 'antd'
 import { baseUrl, Custom } from '../constant'
@@ -16,9 +16,33 @@ import { FormModeMap } from '../store/editor'
 export const CustomOption: FC<any> = (props): ReactElement => {
   const { onChange, editorState, childProps } = props
   const { initContent, setCanShow, setTitle, editor } = childProps
-  const { mode, artItem } = editor || {}
+  const { mode, artItem, canShow } = editor || {}
   const { title = '', id, level = 0, pid } = artItem || {}
   const modeText = useMemo(() => FormModeMap.get(mode), [mode])
+
+  // 移除浏览器默认的 tab 事件
+  const onKeyDown = (e: any) => {
+    if (e.which === 9) {
+      e.preventDefault()
+    }
+    if (e.which === 9 && canShow) {
+      const curContent = editorState.getCurrentContent()
+      const contentState = Modifier.replaceText(
+        curContent,
+        editorState.getSelection(),
+        '　　嗨', // 添加在末尾
+        editorState.getCurrentInlineStyle()
+      )
+      onChange(EditorState.push(editorState, contentState, 'insert-characters'))
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
 
   if (!editorState) return <></>
 
