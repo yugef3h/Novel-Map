@@ -13,6 +13,7 @@ export const FormModeMap = new Map([
 ])
 export interface EditorItem {
   canShow: boolean
+  reload: number
   mode: FormMode
   artItem: {
     id: number | undefined
@@ -26,6 +27,7 @@ export interface EditorItem {
 export const defaultState: EditorItem = {
   canShow: false,
   mode: FormMode.Create,
+  reload: +new Date(),
   artItem: {
     id: undefined,
     level: 0,
@@ -43,7 +45,8 @@ export const actionType: { [p: string]: string } = {
   setId: 'SET_ID',
   setLevel: 'SET_LEVEL',
   setMode: 'SET_MODE',
-  setPId: 'SET_PID'
+  setPId: 'SET_PID',
+  setReload: 'SET_LOAD'
 }
 
 export default (state = defaultState, action: Action<any>): EditorItem => {
@@ -98,6 +101,10 @@ export default (state = defaultState, action: Action<any>): EditorItem => {
     case actionType.setMode:
       return Object.assign({}, state, {
         mode: action.payload
+      })
+    case actionType.setReload:
+      return Object.assign({}, state, {
+        reload: +new Date()
       })
     default:
       return state

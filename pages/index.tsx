@@ -1,5 +1,5 @@
 import Head from 'next/head'
-// import cx from 'classnames'
+import cx from 'classnames'
 import { Timeline, Empty, Badge, Card, message, Pagination, Spin, Tag } from 'antd'
 import dynamic from 'next/dynamic'
 import HotKey from './components/hotkey'
@@ -16,12 +16,12 @@ const Tool = dynamic(() => import('./components/tool'), { ssr: false })
 const { Item } = Timeline
 const { Ribbon } = Badge
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 5
 const CHILDREN_COUNT = 10 // 同级子树的个数
 const LEVEL_LIMIT = 3 // 逐级查找的层数
 
 const Home: FC<Custom> = (props): ReactElement => {
-  const { canShow } = props.editor || {}
+  const { canShow, reload } = props.editor || {}
   const [artList, setArtList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
@@ -53,7 +53,7 @@ const Home: FC<Custom> = (props): ReactElement => {
   useEffect(() => {
     if (canShow) return
     fetchListByPage()
-  }, [currentPage, canShow])
+  }, [currentPage, canShow, reload])
 
   const renderTags = (tags: string, mtime: string) => {
     if (!tags) return <span>{mtime}</span>
@@ -75,13 +75,14 @@ const Home: FC<Custom> = (props): ReactElement => {
     return list.map((_: ArtItem, k: number) => {
       const level = Number(_.level) || 0
       const children = _.children || []
+      const id = _.id
       const tags = _.tags || ''
       const mtime = _.mtime || ''
       const showTool = children.length === 0 || children.length < CHILDREN_COUNT
       if (_.level === 0) {
         return (
           <Item color="gray" key={k}>
-            <Ribbon text={_.title} placement="start" color={formatColor(level)}>
+            <Ribbon text={`${id}. ${_.title}`} placement="start" color={formatColor(level)}>
               {/* title: ctime */}
               <Card className="novel-map__main-card" title={renderTags(tags, mtime)} size="small">
                 <div
@@ -98,8 +99,12 @@ const Home: FC<Custom> = (props): ReactElement => {
       }
       return (
         <div className="child-tree" key={k}>
-          <div className="child-line"></div>
-          <Ribbon text={_.title} placement="start" color={formatColor(level)}>
+          <div
+            className={cx('child-line', {
+              'child-line-hidden': list[k - 1]?.children?.length
+            })}
+          ></div>
+          <Ribbon text={`${id}. ${_.title}`} placement="start" color={formatColor(level)}>
             <Card className="novel-map__main-card" title={renderTags(tags, mtime)} size="small">
               <div
                 dangerouslySetInnerHTML={{

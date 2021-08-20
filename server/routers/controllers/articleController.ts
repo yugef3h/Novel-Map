@@ -112,14 +112,8 @@ export async function create(req: Request, res: Response): Promise<void> {
 }
 
 export async function edit(req: Request, res: Response): Promise<void> {
-  const { title = DEFAULT_FIELD, content = DEFAULT_FIELD, id } = req.body
-  const params = {
-    title,
-    content,
-    state: 1,
-    pid: 0,
-    id
-  }
+  const { title = DEFAULT_FIELD, content = DEFAULT_FIELD, id, tags = '' } = req.body
+  const params = tags ? { id, tags } : { title, content, state: 1, pid: 0, id }
   let msg = 'success'
   try {
     await editArticle(params)
