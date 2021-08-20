@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { ArtItem } from '../server/routers/model/article'
+import { cloneDeep } from 'lodash'
 
 /**
  * 时间戳转换
@@ -12,24 +13,32 @@ export const formatDate = (t: number): string => dayjs(t).format('YYYY-MM-DD HH:
  */
 export const isAppleDevice = (): boolean => /(mac|iphone|ipod|ipad)/i.test(navigator.platform)
 
-export const formatTree = (res: ArtItem[], btree: any): any => {
-  if (!res || !btree) return []
-  const tree: any = {}
-  for (const r of btree) {
-    if ((r as any[]).length) {
-      const { pid } = (r as any[])[0]
-      tree[pid] = r
-    }
+/**
+ * 转换 article 数据
+ * @param res
+ */
+export const formatTree = (res: any[]): any => {
+  let cur = res.shift()
+  const next = res.shift()
+  if (!next || !next.length) return cur
+  const tree: {
+    [id: string]: ArtItem[]
+  } = {}
+  for (const n of next) {
+    const val = tree[n.pid]
+    tree[n.pid] = val ? [...val, n] : [n]
   }
-  return res.map((r: ArtItem) => {
-    const { id } = r || {}
-    return {
-      ...r,
-      children: tree[id] || []
-    }
-  })
+  cur = cur.map((c: ArtItem) => ({
+    ...c,
+    children: (tree[c.id] && formatTree([tree[c.id], ...cloneDeep(res)])) || []
+  }))
+  return cur
 }
 
+/**
+ * 卡片 tag 的颜色
+ * @param level
+ */
 export const formatColor = (level: number): string =>
   ['#1890ff', '#40a9ff', '#69c0ff', '#91d5ff', '#bae7ff', '#e6f7ff'][level]
 

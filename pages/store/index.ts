@@ -1,7 +1,7 @@
 import editor, { actionType as editorType } from './editor'
 import { combineReducers, Dispatch, Store } from 'redux'
 
-const rootReduer = combineReducers({
+export const rootReducer = combineReducers({
   editor
 })
 
@@ -21,4 +21,8 @@ export const mapDispatchToProps = (dispatch: Dispatch): any => {
   }
 }
 
-export default rootReduer
+export default {
+  rootReducer,
+  mapStateToProps,
+  mapDispatchToProps
+}

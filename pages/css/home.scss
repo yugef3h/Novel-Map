@@ -55,23 +55,8 @@
         }
       }
     }
-    .child-tree-1 {
+    .child-tree {
       margin-left: 12vw;
-    }
-    .child-tree-2 {
-      margin-left: 24vw;
-    }
-    .child-tree-3 {
-      margin-left: 36vw;
-    }
-    .child-tree-4 {
-      margin-left: 48vw;
-    }
-    .child-tree-5 {
-      margin-left: 60vw;
-    }
-    .child-tree-6 {
-      margin-left: 72vw;
     }
     .child-line {
       height: 40px;
@@ -182,6 +167,28 @@
       position: absolute;
       top: 11px;
       right: 100px;
+    }
+  }
+  &__pagination {
+    display: inline;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
+  }
+  &__nav {
+    position: fixed;
+    right: 30px;
+    top: 20px;
+    z-index: 10;
+    padding: 0 16px;
+    cursor: default;
+    ul {
+      margin-left: -25px;
     }
   }
 }

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Tooltip } from 'antd'
+import { Tooltip, Select } from 'antd'
 import cx from 'classnames'
 import { mapStateToProps, mapDispatchToProps } from '../store'
 import { connect } from 'react-redux'
@@ -54,11 +54,6 @@ const Tool: FC<ToolProps> = props => {
           <EditOutlined className={'novel-map__tool-icon'} onClick={edit} />
         </Tooltip>
       </span>
-      {/* <span>
-        <Tooltip placement="top" title={'插入节点'}>
-          <PlusCircleOutlined className={'novel-map__tool-icon'} />
-        </Tooltip>
-      </span> */}
       <span>
         <Tooltip placement="top" title={'插入子节点'}>
           <SisternodeOutlined className={'novel-map__tool-icon'} onClick={appendChild} />

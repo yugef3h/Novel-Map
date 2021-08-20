@@ -7,26 +7,39 @@ import {
   ArtItem
 } from '../model/article'
 
-export function getList(req: Request, res: Response): void {
-  const { pn: pageIndex = 1, ps: pageSize = 10, tree_limit: treeLimit = 3 } = req.query
-  console.log(treeLimit)
-  queryArticleList(req).then(async (data: any) => {
-    const promises = data.rows.map((r: ArtItem) => {
-      const { level = 0, extra = '' } = r || {}
-      if (!extra) return Promise.resolve([])
-      if (JSON.parse(extra)?.haveChild || false) return Promise.resolve([])
-      return queryArtChildren({
-        level: Number(level) + 1,
-        pid: r.id
-      })
+const getTrees = async (list: ArtItem[], levelLimit: number, res: any[] = []) => {
+  if (levelLimit-- === 0) return
+  const promises = list.map(r => {
+    const { level = 0, extra = '', id } = r || {}
+    if (!extra) return Promise.resolve([])
+    if (JSON.parse(extra)?.haveChild || false) return Promise.resolve([])
+    return queryArtChildren({
+      level: Number(level) + 1,
+      pid: id
     })
-    const result = await Promise.all(promises)
+  })
+  const result = await Promise.all(promises)
+  const flatResult = result.reduce((p, n) => {
+    if (!n.length) return p
+    return [...p, ...n]
+  }, [])
+  res.push(flatResult)
+  await getTrees(flatResult, levelLimit, res)
+}
+
+export function getList(req: Request, res: Response): void {
+  const { pn: pageIndex = 1, ps: pageSize = 10 } = req.query
+  // queryArticleList -> Model.findAndCountAll
+  // queryArtChildren -> Model.findAll
+  queryArticleList(req).then(async (data: any) => {
+    const result: any[] = [data.rows]
+    const levelLimit = Number(req.query?.level_limit || '3')
+    await getTrees(data.rows, levelLimit, result)
 
     res.status(200).send({
       code: 0,
       data: {
-        list: data.rows || [],
-        tree: result,
+        list: result || [],
         pageIndex: +pageIndex,
         pageSize: +pageSize,
         count: data.count
