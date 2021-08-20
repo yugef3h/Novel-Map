@@ -56,7 +56,7 @@ export const createArticle = (params: Omit<ArtItem, 'id'>): any => {
   return articleOrm.create(params)
 }
 
-export const editArticle = (params: ArtItem): any => {
+export const editArticle = (params: any): any => {
   const { id, ...data } = params || {}
   return articleOrm.update(data, {
     where: {

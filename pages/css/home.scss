@@ -26,6 +26,7 @@
       align-items: center;
     }
     .ant-card {
+      border-radius: 5px;
       &-body {
         position: relative;
         .novel-map {
@@ -59,13 +60,19 @@
       margin-left: 12vw;
     }
     .child-line {
-      height: 40px;
+      height: 30px;
       width: 1px;
       margin-left: 30px;
       background-color: #dfe1e6;
+      &-hidden {
+        background-color: transparent;
+      }
     }
-    .ant-timeline-item-tail {
-      border-left: 1px solid #dfe1e6;
+    .ant-timeline-item {
+      margin-top: 20px;
+      &-tail {
+        border-left: 1px solid #dfe1e6;
+      }
     }
     .ant-ribbon-wrapper {
       width: 45vw;
