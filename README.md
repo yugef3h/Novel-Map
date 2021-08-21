@@ -20,20 +20,20 @@ export default Avatar
 
 ## mysql 全文搜索
 
-查看下分词长度数据：
+查看分词长度：
 
 ```cmd
 - SHOW VARIABLES LIKE 'ft_min_word_len';
 - SHOW VARIABLES LIKE 'ngram_token_size';
 ```
 
-查看 mysql 应用的配置在哪：
+查看 mysql 配置在哪：
 
 ```cmd
 mysql --help | grep 'Default options' -A 1
 ```
 
-如果没有则新增配置：/etc/my.cnf，从 mysql 的安装路径下复制改名一份 .cnf 后缀的文件：
+如果没有配置文件则新建：/etc/my.cnf，从 mysql 的安装路径下复制并改名一份 .cnf 后缀的文件：
 
 ```cmd
 # 添加并重启服务
@@ -59,4 +59,6 @@ select title,content, MATCH (content) AGAINST ('-测试 +内容') as score from 
 
 - [ ] winston global.logger
 - [ ] cookie/session
-- [ ] es
+- [ ] es 检索翻页 + tags 合并检索
+- [ ] ts
+- [ ] 配置
