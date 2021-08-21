@@ -1,12 +1,15 @@
 import dayjs from 'dayjs'
 import { ArtItem } from '../server/routers/model/article'
 import { cloneDeep } from 'lodash'
+import moment from 'moment'
 
 /**
  * 时间戳转换
  * @param t
  */
 export const formatDate = (t: number): string => dayjs(t).format('YYYY-MM-DD HH:mm:ss')
+
+export const formatUtc = (t: string): string => moment(t).format('YYYY-MM-DD HH:mm:ss')
 
 /**
  * 苹果设备
@@ -35,18 +38,31 @@ export const formatTree = (res: any[]): any => {
   return cur
 }
 
-/**
- * 卡片 tag 的颜色
- * @param level
- */
 export const formatColor = (level: number): string => {
   const color = ['#1890ff', '#40a9ff', '#69c0ff'][level]
   return color || '#69c0ff'
+}
+
+export const tagsColor = (i: number): string => {
+  const colorArr = [
+    '#f5222d',
+    '#ff7a45',
+    '#fa8c16',
+    '#ffc53d',
+    '#52c41a',
+    '#40a9ff',
+    '#2f54eb',
+    '#722ed1',
+    '#ff85c0',
+    '#8c8c8c'
+  ]
+  return colorArr[i >= colorArr.length ? i % colorArr.length : i]
 }
 
 export default {
   formatDate,
   isAppleDevice,
   formatTree,
-  formatColor
+  formatColor,
+  tagsColor
 }

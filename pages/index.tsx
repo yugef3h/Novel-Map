@@ -7,7 +7,7 @@ import React, { ReactElement, useEffect, useState, FC, useCallback } from 'react
 import { baseUrl, Custom, Constants } from './constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from './store'
-import { formatTree, formatColor } from './utils'
+import { formatTree, formatColor, formatUtc } from './utils'
 import { ArtItem } from '../server/routers/model/article'
 import Nav from './components/nav'
 
@@ -85,7 +85,7 @@ const Home: FC<Custom> = (props): ReactElement => {
   }, [currentPage, canShow, reloadTime])
 
   const renderTags = (tags: string, mtime: string) => {
-    if (!tags) return <span>{mtime}</span>
+    if (!tags) return <span>{formatUtc(mtime)}</span>
     const tagsArr = tags.split(',')
     return (
       <>
@@ -95,7 +95,7 @@ const Home: FC<Custom> = (props): ReactElement => {
               {t}
             </Tag>
           ))}
-        <span>{mtime}</span>
+        <span>{formatUtc(mtime)}</span>
       </>
     )
   }

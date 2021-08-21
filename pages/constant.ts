@@ -33,3 +33,17 @@ export const Constants = {
   CHILDREN_COUNT: 10, // 同级子树的个数
   LEVEL_LIMIT: 3 // 逐级查找的层数
 }
+
+export const options = [
+  '校园',
+  '战斗',
+  '人物描写',
+  '金句',
+  '梗',
+  '爽点',
+  '土味撩人',
+  '设定',
+  '段子',
+  '佳作',
+  '起承转合'
+]

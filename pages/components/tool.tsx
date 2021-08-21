@@ -13,15 +13,13 @@ import {
 } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs'
 import { ArtItem } from '../../server/routers/model/article'
-import { Custom, baseUrl, Constants } from '../constant'
+import { Custom, baseUrl, Constants, options } from '../constant'
 import { FormMode } from '../store/editor'
 import { debounce } from 'lodash'
 const { Option } = Select
 const { LEVEL_LIMIT } = Constants
 
 type ToolProps = Partial<Custom & { item: ArtItem }>
-
-const options = ['校园', '战斗', '人物描写', '金句', '梗', '爽点']
 
 const Tool: FC<ToolProps> = props => {
   const {
@@ -150,7 +148,7 @@ const Tool: FC<ToolProps> = props => {
         onChange={onChange}
         style={{ width: '240px' }}
       >
-        {children}
+        {opts}
       </Select>
     )
   }
