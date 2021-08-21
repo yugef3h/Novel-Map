@@ -39,8 +39,10 @@ export const formatTree = (res: any[]): any => {
  * 卡片 tag 的颜色
  * @param level
  */
-export const formatColor = (level: number): string =>
-  ['#1890ff', '#40a9ff', '#69c0ff', '#91d5ff', '#bae7ff', '#e6f7ff'][level]
+export const formatColor = (level: number): string => {
+  const color = ['#1890ff', '#40a9ff', '#69c0ff'][level]
+  return color || '#69c0ff'
+}
 
 export default {
   formatDate,

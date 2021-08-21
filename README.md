@@ -18,29 +18,45 @@ function Avatar() {
 export default Avatar
 ```
 
-## 全文搜索
+## mysql 全文搜索
 
-mysql 修改分词长度：
-
-- SHOW VARIABLES LIKE 'ft_min_word_len';
-- SHOW VARIABLES LIKE 'ngram_token_size';
+查看下分词长度数据：
 
 ```cmd
-# /etc/mysql/mysql.conf.d/mysqld.cnf
+- SHOW VARIABLES LIKE 'ft_min_word_len';
+- SHOW VARIABLES LIKE 'ngram_token_size';
+```
 
+查看 mysql 应用的配置在哪：
+
+```cmd
+mysql --help | grep 'Default options' -A 1
+```
+
+如果没有则新增配置：/etc/my.cnf，从 mysql 的安装路径下复制改名一份 .cnf 后缀的文件：
+
+```cmd
+# 添加并重启服务
 ft_min_word_len = 2
 ngram_token_size = 2
+```
 
+全文检索 sql：
 
-# 如果没有则新增配置
-echo 'ft_min_word_len = 2
-ngram_token_size = 2' >> mysqld.cnf
+```cmd
 
-# 重启服务
-/etc/init.d/mysql restart
+# 检索：包含 “内容”，或 “测试”
+select title,content, MATCH (content) AGAINST ('测试 内容') as score from art_page where MATCH (content) AGAINST ('测试 内容' IN BOOLEAN MODE);
+
+# 检索：包含 “内容”，及 “测试”
+select title,content, MATCH (content) AGAINST ('+测试 +内容') as score from art_page where MATCH (content) AGAINST ('+测试 +内容' IN BOOLEAN MODE);
+
+# 检索：包含 “内容”，但不包含 “测试”
+select title,content, MATCH (content) AGAINST ('-测试 +内容') as score from art_page where MATCH (content) AGAINST ('-测试 +内容' IN BOOLEAN MODE);
 ```
 
 ## TODO
 
 - [ ] winston global.logger
 - [ ] cookie/session
+- [ ] es

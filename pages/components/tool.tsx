@@ -1,5 +1,5 @@
 import React, { FC, useState, useCallback, useMemo } from 'react'
-import { Tooltip, Select, Popover, message } from 'antd'
+import { Tooltip, Select, Popover, message, Popconfirm } from 'antd'
 import cx from 'classnames'
 import { mapStateToProps, mapDispatchToProps } from '../store'
 import { connect } from 'react-redux'
@@ -13,10 +13,11 @@ import {
 } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs'
 import { ArtItem } from '../../server/routers/model/article'
-import { Custom, baseUrl } from '../constant'
+import { Custom, baseUrl, Constants } from '../constant'
 import { FormMode } from '../store/editor'
 import { debounce } from 'lodash'
 const { Option } = Select
+const { LEVEL_LIMIT } = Constants
 
 type ToolProps = Partial<Custom & { item: ArtItem }>
 
@@ -33,10 +34,10 @@ const Tool: FC<ToolProps> = props => {
     setPId,
     setLevel,
     setMode,
-    setReload
+    setReloadTime
   } = props
   const { canShow } = editor || {}
-  const { content: serverContent, title, id, level = 0, tags } = item || {}
+  const { content: serverContent, title, id, level = 0, tags, children } = item || {}
   const currentLabel = useMemo(() => tags?.split(','), [tags])
   const toolCx = cx('novel-map__tool', {
     'tool-hidden': canShow
@@ -57,6 +58,10 @@ const Tool: FC<ToolProps> = props => {
   }
 
   const appendChild = () => {
+    if (level >= LEVEL_LIMIT) {
+      message.warning(`子节点无法添加，限制 ${LEVEL_LIMIT} 级！`)
+      return
+    }
     setMode(FormMode.Create)
     setCanShow()
     setLevel(+level + 1)
@@ -81,7 +86,32 @@ const Tool: FC<ToolProps> = props => {
         result => {
           if (+result.code !== 0) return message.error(JSON.stringify(result))
           message.success('标签修改成功！')
-          setReload()
+          setReloadTime()
+        },
+        err => {
+          message.error(JSON.stringify(err))
+        }
+      )
+  }
+
+  const deleteArticle = () => {
+    fetch(`${baseUrl}/api/v1/article/delete`, {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        id,
+        state: -1
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(res => res.json())
+      .then(
+        result => {
+          if (+result.code !== 0) return message.error(JSON.stringify(result))
+          message.success('删除成功！')
+          setReloadTime()
         },
         err => {
           message.error(JSON.stringify(err))
@@ -95,7 +125,7 @@ const Tool: FC<ToolProps> = props => {
   )
 
   const content = () => {
-    const children = options.map(o => (
+    const opts = options.map(o => (
       <Option key={o} value={o}>
         {o}
       </Option>
@@ -109,7 +139,7 @@ const Tool: FC<ToolProps> = props => {
           onChange={onChange}
           style={{ width: '240px' }}
         >
-          {children}
+          {opts}
         </Select>
       )
     }
@@ -142,11 +172,20 @@ const Tool: FC<ToolProps> = props => {
           <TagOutlined className={'novel-map__tool-icon'} />
         </Popover>
       </span>
-      <span>
-        <Tooltip placement="top" title={'删除'}>
-          <DeleteOutlined className={'novel-map__tool-icon'} />
-        </Tooltip>
-      </span>
+      {(!children || (children && !children.length)) && (
+        <span>
+          <Popconfirm
+            title="Are you sure to delete this article?"
+            onConfirm={deleteArticle}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Tooltip placement="top" title={'删除'}>
+              <DeleteOutlined className={'novel-map__tool-icon'} />
+            </Tooltip>
+          </Popconfirm>
+        </span>
+      )}
     </div>
   )
 }

@@ -8,11 +8,27 @@ import { mapDispatchToProps, mapStateToProps } from '../store'
 import { FormMode } from '../store/editor'
 
 const hotkey = (props: Partial<Custom>): ReactElement => {
-  const { setCanShow, editor, setId, setPId, setTitle, initContent, setMode, setLevel } = props
+  const {
+    setCanShow,
+    editor,
+    setId,
+    setPId,
+    setTitle,
+    initContent,
+    setMode,
+    setLevel,
+    setFocusTime,
+    setReloadTime
+  } = props
   const onKeyDown = (keyName: string) => {
     switch (keyName) {
       case 'option+e':
         return setCanShow()
+      case 'option+k':
+        return setFocusTime()
+      case 'option+r':
+        setReloadTime()
+        return
       case 'option+enter':
         return ''
       default: {
@@ -30,7 +46,9 @@ const hotkey = (props: Partial<Custom>): ReactElement => {
       }
     }
   }
-  return <Hotkeys keyName="option+e,option+enter,esc" onKeyDown={onKeyDown}></Hotkeys>
+  return (
+    <Hotkeys keyName="option+e,option+r,option+k,option+enter,esc" onKeyDown={onKeyDown}></Hotkeys>
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(hotkey)
