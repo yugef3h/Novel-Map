@@ -4,7 +4,8 @@ import {
   createArticle,
   editArticle,
   queryArtChildren,
-  ArtItem
+  ArtItem,
+  queryFullText
 } from '../model/article'
 
 const getTrees = async (list: ArtItem[], levelLimit: number, res: any[] = []) => {
@@ -123,5 +124,31 @@ export async function edit(req: Request, res: Response): Promise<void> {
   res.status(200).send({
     code: 0,
     msg
+  })
+}
+
+export async function del(req: Request, res: Response): Promise<void> {
+  const { id, state } = req.body
+  const params = {
+    id,
+    state
+  }
+  let msg = 'success'
+  try {
+    await editArticle(params)
+  } catch (e) {
+    msg = 'del:' + JSON.stringify(e)
+  }
+  res.status(200).send({
+    code: 0,
+    msg
+  })
+}
+
+export async function search(req: Request, res: Response): Promise<void> {
+  const data = await queryFullText(req)
+  res.status(200).send({
+    code: 0,
+    data: data[0]
   })
 }

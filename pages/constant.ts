@@ -4,7 +4,6 @@ export const baseUrl = 'http://localhost:8081'
 
 export interface Custom {
   editor?: Partial<EditorItem>
-  reload?: boolean
   setCanShow?: any
   setContent?: any
   initContent?: any
@@ -13,10 +12,24 @@ export interface Custom {
   setMode?: any
   setId?: any
   setPId?: any
-  setReload?: any
+
+  reloadTime?: number
+  setReloadTime?: any
+
+  focusTime?: number
+  setFocusTime?: any
+
+  searchVal?: string
+  setSearchVal?: any
 }
 
 export interface Action<T> {
   type: string
   payload?: T
+}
+
+export const Constants = {
+  PAGE_SIZE: 5,
+  CHILDREN_COUNT: 10, // 同级子树的个数
+  LEVEL_LIMIT: 3 // 逐级查找的层数
 }

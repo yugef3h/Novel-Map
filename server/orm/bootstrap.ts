@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize'
 import { init as initArtPageModel } from './article'
+import CONFIG from '../config'
+const { HOST, PORT, USER, PASSWORD, DATABASE } = CONFIG
 
 export interface DbConfig {
   host: string
@@ -19,12 +21,12 @@ const defaultResource = 'article'
 
 async function getDB(resource = defaultResource): Promise<Sequelize> {
   if (instances[resource]) return instances[resource]
-  const conf: DbConfig = {
-    host: '127.0.0.1',
-    port: 3306,
-    user: 'root',
-    password: 'Qing123.',
-    database: 'novel_map'
+  const conf: Partial<DbConfig> = {
+    host: HOST,
+    port: +(PORT || 3306),
+    user: USER,
+    password: PASSWORD,
+    database: DATABASE
   }
   const orm = new Sequelize({
     dialect: 'mysql',

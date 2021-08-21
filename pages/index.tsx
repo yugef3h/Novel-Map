@@ -4,7 +4,7 @@ import { Timeline, Empty, Badge, Card, message, Pagination, Spin, Tag } from 'an
 import dynamic from 'next/dynamic'
 import HotKey from './components/hotkey'
 import React, { ReactElement, useEffect, useState, FC, useCallback } from 'react'
-import { baseUrl, Custom } from './constant'
+import { baseUrl, Custom, Constants } from './constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from './store'
 import { formatTree, formatColor } from './utils'
@@ -16,18 +16,17 @@ const Tool = dynamic(() => import('./components/tool'), { ssr: false })
 const { Item } = Timeline
 const { Ribbon } = Badge
 
-const PAGE_SIZE = 5
-const CHILDREN_COUNT = 10 // 同级子树的个数
-const LEVEL_LIMIT = 3 // 逐级查找的层数
+const { PAGE_SIZE, CHILDREN_COUNT, LEVEL_LIMIT } = Constants
 
 const Home: FC<Custom> = (props): ReactElement => {
-  const { canShow, reload } = props.editor || {}
+  const { canShow, reloadTime, searchVal } = props.editor || {}
   const [artList, setArtList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
 
   const fetchListByPage = useCallback(() => {
+    setLoading(true)
     const novelQuery = `level=0&level_limit=${LEVEL_LIMIT}`
     fetch(`${baseUrl}/api/v1/article/query_list?pn=${currentPage}&ps=${PAGE_SIZE}&${novelQuery}`, {
       headers: {
@@ -50,10 +49,40 @@ const Home: FC<Custom> = (props): ReactElement => {
       )
   }, [currentPage])
 
+  const searchByPage = useCallback(() => {
+    setLoading(true)
+    fetch(`${baseUrl}/api/v1/article/search?q=${searchVal}`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache'
+      }
+    })
+      .then(res => res.json())
+      .then(
+        r => {
+          if (+r.code !== 0) return message.warning(r?.msg)
+          setArtList(r.data || [])
+          setLoading(false)
+          setTotal(r.data.length || 0)
+        },
+        err => {
+          console.log(err?.msg)
+        }
+      )
+  }, [searchVal])
+
+  useEffect(() => {
+    if (!searchVal) {
+      fetchListByPage()
+      return
+    }
+    searchByPage()
+  }, [searchVal])
+
   useEffect(() => {
     if (canShow) return
     fetchListByPage()
-  }, [currentPage, canShow, reload])
+  }, [currentPage, canShow, reloadTime])
 
   const renderTags = (tags: string, mtime: string) => {
     if (!tags) return <span>{mtime}</span>
@@ -111,7 +140,7 @@ const Home: FC<Custom> = (props): ReactElement => {
                   __html: _.content
                 }}
               />
-              {showTool && level < LEVEL_LIMIT && <Tool item={_} />}
+              {showTool && <Tool item={_} />}
             </Card>
           </Ribbon>
           {_.children && loop(_.children)}
@@ -143,14 +172,17 @@ const Home: FC<Custom> = (props): ReactElement => {
               description={<span>我们的征途是星辰大海！</span>}
             />
           )}
-          <Pagination
-            className="novel-map__pagination"
-            simple
-            current={currentPage}
-            total={total}
-            pageSize={PAGE_SIZE}
-            onChange={(n: number) => setCurrentPage(n)}
-          />
+          {!searchVal && (
+            <Pagination
+              className="novel-map__pagination"
+              simple
+              current={currentPage}
+              hideOnSinglePage={true}
+              total={total}
+              pageSize={PAGE_SIZE}
+              onChange={(n: number) => setCurrentPage(n)}
+            />
+          )}
           <div className="novel-map__main-info">
             <Editor />
           </div>
