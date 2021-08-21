@@ -1,9 +1,10 @@
 import React, { FC, useEffect } from 'react'
 import { SketchSquareFilled } from '@ant-design/icons'
-import { Input, Typography } from 'antd'
+import { Input, Typography, Tag } from 'antd'
 import { mapStateToProps, mapDispatchToProps } from '../store/index'
-import { Custom } from '../constant'
+import { Custom, options as labels } from '../constant'
 import { connect } from 'react-redux'
+import { tagsColor } from '../utils'
 const { Paragraph, Text } = Typography
 const { Search } = Input
 
@@ -19,6 +20,10 @@ const Nav: FC<Custom> = props => {
 
   const onSearch = (val: string) => {
     setSearchVal(val.trim())
+  }
+
+  const onClick = (e: any) => {
+    console.log(e.target.innerHTML.trim())
   }
 
   useEffect(() => {
@@ -58,6 +63,13 @@ const Nav: FC<Custom> = props => {
           </Paragraph>
         </li>
       </ul>
+      <div className="novel-map__labels">
+        {labels.map((l, i) => (
+          <Tag key={l} color={tagsColor(i)} onClick={onClick}>
+            {l}
+          </Tag>
+        ))}
+      </div>
     </div>
   )
 }

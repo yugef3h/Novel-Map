@@ -1,13 +1,13 @@
 import React, { FC, ReactElement, useMemo, useEffect } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { EditorState, convertToRaw, Modifier, SelectionState } from 'draft-js'
+import { EditorState, convertToRaw, Modifier } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { Button, Input, message, Tag } from 'antd'
 import { baseUrl, Custom } from '../constant'
 import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from '../store'
-import { FormModeMap } from '../store/editor'
+import { FormModeMap, FormMode } from '../store/editor'
 
 /**
  * 自定义 toolbar
@@ -15,7 +15,7 @@ import { FormModeMap } from '../store/editor'
  */
 export const CustomOption: FC<any> = (props): ReactElement => {
   const { onChange, editorState, childProps } = props
-  const { initContent, setCanShow, setTitle, editor } = childProps
+  const { initContent, setCanShow, setTitle, editor, setId, setPId, setLevel, setMode } = childProps
   const { mode, artItem, canShow } = editor || {}
   const { title = '', id, level = 0, pid } = artItem || {}
   const modeText = useMemo(() => FormModeMap.get(mode), [mode])
@@ -91,6 +91,10 @@ export const CustomOption: FC<any> = (props): ReactElement => {
           setCanShow()
           setTitle('')
           initContent()
+          setId(undefined)
+          setPId(undefined)
+          setLevel(0)
+          setMode(FormMode.Create)
         },
         err => {
           message.error(JSON.stringify(err))
