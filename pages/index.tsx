@@ -19,15 +19,16 @@ const { Ribbon } = Badge
 const { PAGE_SIZE, CHILDREN_COUNT, LEVEL_LIMIT } = Constants
 
 const Home: FC<Custom> = (props): ReactElement => {
-  const { canShow, reloadTime, searchVal } = props.editor || {}
+  const { canShow, reloadVal, searchVal } = props.editor || {}
   const [artList, setArtList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [labels, setLabels] = useState<string[]>([])
 
   const fetchListByPage = useCallback(() => {
     setLoading(true)
-    const novelQuery = `level=0&level_limit=${LEVEL_LIMIT}`
+    const novelQuery = `level=0&level_limit=${LEVEL_LIMIT}&tag=${reloadVal}`
     fetch(`${baseUrl}/api/v1/article/query_list?pn=${currentPage}&ps=${PAGE_SIZE}&${novelQuery}`, {
       headers: {
         'Cache-Control': 'no-cache',
@@ -47,11 +48,10 @@ const Home: FC<Custom> = (props): ReactElement => {
           console.log(err?.msg)
         }
       )
-  }, [currentPage])
+  }, [currentPage, reloadVal])
 
-  const searchByPage = useCallback(() => {
-    setLoading(true)
-    fetch(`${baseUrl}/api/v1/article/search?q=${searchVal}`, {
+  const fetchLabels = useCallback(() => {
+    fetch(`${baseUrl}/api/v1/article/query_labels`, {
       headers: {
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache'
@@ -61,28 +61,53 @@ const Home: FC<Custom> = (props): ReactElement => {
       .then(
         r => {
           if (+r.code !== 0) return message.warning(r?.msg)
-          setArtList(r.data || [])
-          setLoading(false)
-          setTotal(r.data.length || 0)
+          setLabels(r.data || [])
         },
         err => {
           console.log(err?.msg)
         }
       )
-  }, [searchVal])
+  }, [currentPage])
+
+  const searchByPage = useCallback(() => {
+    setLoading(true)
+    fetch(`${baseUrl}/api/v1/article/search?q=${searchVal}&pn=${currentPage}&ps=${PAGE_SIZE}`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache'
+      }
+    })
+      .then(res => res.json())
+      .then(
+        r => {
+          if (+r.code !== 0) return message.warning(r?.msg)
+          setArtList(r.data?.[0] || [])
+          setLoading(false)
+          setTotal(r.data?.[1]?.[0]?.['FOUND_ROWS()'] || 0)
+        },
+        err => {
+          console.log(err?.msg)
+        }
+      )
+  }, [searchVal, currentPage])
 
   useEffect(() => {
-    if (!searchVal) {
-      fetchListByPage()
-      return
-    }
-    searchByPage()
-  }, [searchVal])
+    !searchVal ? fetchListByPage() : searchByPage()
+  }, [searchVal, currentPage])
 
   useEffect(() => {
+    setCurrentPage(1)
+  }, [searchVal, reloadVal])
+
+  useEffect(() => {
+    fetchLabels()
+  }, [])
+
+  useEffect(() => {
+    if (searchVal) return
     if (canShow) return
     fetchListByPage()
-  }, [currentPage, canShow, reloadTime])
+  }, [currentPage, canShow, reloadVal])
 
   const renderTags = (tags: string, mtime: string) => {
     if (!tags) return <span>{formatUtc(mtime)}</span>
@@ -119,7 +144,7 @@ const Home: FC<Custom> = (props): ReactElement => {
                     __html: _.content
                   }}
                 />
-                {showTool && <Tool item={_} />}
+                {showTool && <Tool item={_} labels={labels} />}
               </Card>
             </Ribbon>
             {_.children && loop(_.children)}
@@ -140,7 +165,7 @@ const Home: FC<Custom> = (props): ReactElement => {
                   __html: _.content
                 }}
               />
-              {showTool && <Tool item={_} />}
+              {showTool && <Tool item={_} labels={labels} />}
             </Card>
           </Ribbon>
           {_.children && loop(_.children)}
@@ -155,7 +180,7 @@ const Home: FC<Custom> = (props): ReactElement => {
         <title>Novel Map</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Nav />
+      <Nav labels={labels} />
       {loading ? (
         <Spin spinning />
       ) : (
@@ -172,17 +197,15 @@ const Home: FC<Custom> = (props): ReactElement => {
               description={<span>我们的征途是星辰大海！</span>}
             />
           )}
-          {!searchVal && (
-            <Pagination
-              className="novel-map__pagination"
-              simple
-              current={currentPage}
-              hideOnSinglePage={true}
-              total={total}
-              pageSize={PAGE_SIZE}
-              onChange={(n: number) => setCurrentPage(n)}
-            />
-          )}
+          <Pagination
+            className="novel-map__pagination"
+            simple
+            current={currentPage}
+            hideOnSinglePage={true}
+            total={total}
+            pageSize={PAGE_SIZE}
+            onChange={(n: number) => setCurrentPage(n)}
+          />
           <div className="novel-map__main-info">
             <Editor />
           </div>

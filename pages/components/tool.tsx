@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useMemo } from 'react'
+import React, { FC, useCallback, useMemo } from 'react'
 import { Tooltip, Select, Popover, message, Popconfirm } from 'antd'
 import cx from 'classnames'
 import { mapStateToProps, mapDispatchToProps } from '../store'
@@ -13,13 +13,18 @@ import {
 } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs'
 import { ArtItem } from '../../server/routers/model/article'
-import { Custom, baseUrl, Constants, options } from '../constant'
+import { Custom, baseUrl, Constants } from '../constant'
 import { FormMode } from '../store/editor'
 import { debounce } from 'lodash'
 const { Option } = Select
 const { LEVEL_LIMIT } = Constants
 
-type ToolProps = Partial<Custom & { item: ArtItem }>
+type ToolProps = Partial<
+  Custom & {
+    item: ArtItem
+    labels: string[]
+  }
+>
 
 const Tool: FC<ToolProps> = props => {
   const {
@@ -32,7 +37,8 @@ const Tool: FC<ToolProps> = props => {
     setPId,
     setLevel,
     setMode,
-    setReloadTime
+    setReloadVal,
+    labels
   } = props
   const { canShow } = editor || {}
   const { content: serverContent, title, id, level = 0, tags, children } = item || {}
@@ -84,7 +90,7 @@ const Tool: FC<ToolProps> = props => {
         result => {
           if (+result.code !== 0) return message.error(JSON.stringify(result))
           message.success('标签修改成功！')
-          setReloadTime()
+          setReloadVal(+new Date())
         },
         err => {
           message.error(JSON.stringify(err))
@@ -109,7 +115,7 @@ const Tool: FC<ToolProps> = props => {
         result => {
           if (+result.code !== 0) return message.error(JSON.stringify(result))
           message.success('删除成功！')
-          setReloadTime()
+          setReloadVal(+new Date())
         },
         err => {
           message.error(JSON.stringify(err))
@@ -123,11 +129,13 @@ const Tool: FC<ToolProps> = props => {
   )
 
   const content = () => {
-    const opts = options.map(o => (
-      <Option key={o} value={o}>
-        {o}
-      </Option>
-    ))
+    const opts =
+      labels &&
+      labels.map(o => (
+        <Option key={o} value={o}>
+          {o}
+        </Option>
+      ))
     if (tags) {
       return (
         <Select

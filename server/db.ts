@@ -1,7 +1,7 @@
 import mysql from 'mysql2'
 import Promise from 'bluebird'
-import CONFIG from './config'
-const { HOST, PORT, USER, PASSWORD, DATABASE } = CONFIG
+import env from './config'
+const { HOST, PORT, USER, PASSWORD, DATABASE } = env.CONFIG
 
 export interface DbConfig {
   host: string
@@ -9,6 +9,7 @@ export interface DbConfig {
   user: string
   password: string
   database: string
+  multipleStatements?: boolean
 }
 
 const config: Partial<DbConfig> = {
@@ -16,7 +17,8 @@ const config: Partial<DbConfig> = {
   port: +(PORT || 3306),
   user: USER,
   password: PASSWORD,
-  database: DATABASE
+  database: DATABASE,
+  multipleStatements: true
 }
 
 const conn = mysql.createConnection(config)

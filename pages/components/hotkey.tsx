@@ -18,7 +18,7 @@ const hotkey = (props: Partial<Custom>): ReactElement => {
     setMode,
     setLevel,
     setFocusTime,
-    setReloadTime
+    setReloadVal
   } = props
   const onKeyDown = (keyName: string) => {
     switch (keyName) {
@@ -27,7 +27,7 @@ const hotkey = (props: Partial<Custom>): ReactElement => {
       case 'option+k':
         return setFocusTime()
       case 'option+r':
-        setReloadTime()
+        setReloadVal(+new Date())
         return
       case 'option+enter':
         return ''

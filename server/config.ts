@@ -5,4 +5,24 @@ const CONFIG = {
   PASSWORD: 'Qing123.',
   DATABASE: 'novel_map'
 }
-export default CONFIG
+
+const labels = [
+  '校园',
+  '战斗',
+  '人物描写',
+  '金句',
+  '梗',
+  '爽点',
+  '土味撩人',
+  '设定',
+  '段子',
+  '佳作',
+  '起承转合',
+  '商业',
+  '大纲'
+]
+
+export default {
+  CONFIG,
+  labels
+}
