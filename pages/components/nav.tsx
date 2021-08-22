@@ -1,15 +1,19 @@
 import React, { FC, useEffect } from 'react'
 import { SketchSquareFilled } from '@ant-design/icons'
-import { Input, Typography, Tag } from 'antd'
+import { Input, Typography, Tag, message } from 'antd'
 import { mapStateToProps, mapDispatchToProps } from '../store/index'
-import { Custom, options as labels } from '../constant'
+import { Custom } from '../constant'
 import { connect } from 'react-redux'
 import { tagsColor } from '../utils'
 const { Paragraph, Text } = Typography
 const { Search } = Input
 
-const Nav: FC<Custom> = props => {
-  const { setSearchVal } = props
+type NavProps = Custom & {
+  labels: string[]
+}
+
+const Nav: FC<NavProps> = props => {
+  const { setSearchVal, labels, setReloadVal } = props
   const { focusTime } = props.editor || {}
   const inputRef = React.useRef<any>(null)
 
@@ -19,11 +23,14 @@ const Nav: FC<Custom> = props => {
   }
 
   const onSearch = (val: string) => {
+    const v = val.trim()
+    if (v.length === 1) return message.warning('字符长度至少为 2，请重新输入')
     setSearchVal(val.trim())
   }
 
   const onClick = (e: any) => {
-    console.log(e.target.innerHTML.trim())
+    const label = e.target.innerText
+    setReloadVal(label)
   }
 
   useEffect(() => {
@@ -45,11 +52,6 @@ const Nav: FC<Custom> = props => {
         <li>
           <Paragraph>
             Press <Text keyboard>Option</Text>+<Text keyboard>K</Text> to focus Search
-          </Paragraph>
-        </li>
-        <li>
-          <Paragraph>
-            Press <Text keyboard>Option</Text>+<Text keyboard>R</Text> to reset Search
           </Paragraph>
         </li>
         <li>

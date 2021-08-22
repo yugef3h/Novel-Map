@@ -13,7 +13,7 @@ export const FormModeMap = new Map([
 ])
 export interface EditorItem {
   canShow: boolean
-  reloadTime: number
+  reloadVal: number | string
   mode: FormMode
   focusTime: number
   searchVal: string
@@ -29,7 +29,7 @@ export interface EditorItem {
 export const defaultState: EditorItem = {
   canShow: false,
   mode: FormMode.Create,
-  reloadTime: +new Date(),
+  reloadVal: +new Date(),
   focusTime: +new Date(),
   searchVal: '',
   artItem: {
@@ -50,7 +50,7 @@ export const actionType: { [p: string]: string } = {
   setLevel: 'SET_LEVEL',
   setMode: 'SET_MODE',
   setPId: 'SET_PID',
-  setReloadTime: 'SET_RELOAD_TIME',
+  setReloadVal: 'SET_RELOAD_TIME',
   setFocusTime: 'SET_FOCUS_TIME',
   setSearchVal: 'SET_SEARCH_TIME'
 }
@@ -108,9 +108,9 @@ const reducer = (state = defaultState, action: Action<any>): EditorItem => {
       return Object.assign({}, state, {
         mode: action.payload
       })
-    case actionType.setReloadTime:
+    case actionType.setReloadVal:
       return Object.assign({}, state, {
-        reloadTime: +new Date()
+        reloadVal: action.payload
       })
     case actionType.setFocusTime:
       return Object.assign({}, state, {

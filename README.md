@@ -55,10 +55,37 @@ select title,content, MATCH (content) AGAINST ('+测试 +内容') as score from 
 select title,content, MATCH (content) AGAINST ('-测试 +内容') as score from art_page where MATCH (content) AGAINST ('-测试 +内容' IN BOOLEAN MODE);
 ```
 
+## 建表
+
+```sql
+CREATE TABLE `art_page` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增 id',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `desc` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
+  `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
+  `tags` varchar(255) NOT NULL DEFAULT '' COMMENT '标签',
+  `pid` bigint unsigned NOT NULL DEFAULT '0' COMMENT '父节点 id',
+  `content` mediumtext NOT NULL COMMENT '内容',
+  `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `state` tinyint NOT NULL DEFAULT '1' COMMENT '-1 删除，1 已发布，2 草稿',
+  `level` tinyint NOT NULL DEFAULT '0',
+  `extra` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '额外字段，不对前端暴露',
+  PRIMARY KEY (`id`),
+  KEY `idx_mtime` (`mtime`),
+  KEY `idx_title` (`title`),
+  KEY `idx_pid` (`pid`) USING BTREE,
+  KEY `idx_level` (`level`) USING BTREE,
+  KEY `idx_tags` (`tags`) USING BTREE,
+  FULLTEXT KEY `idx_content` (`content`) /*!50100 WITH PARSER `ngram` */ ,
+  FULLTEXT KEY `ix_title_content` (`content`,`title`) /*!50100 WITH PARSER `ngram` */
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COMMENT='小说脑图列表';
+```
+
 ## TODO
 
 - [ ] winston global.logger
 - [ ] cookie/session
-- [ ] es 检索翻页 + tags 合并检索
-- [ ] ts
+- [ ] ts 类型检查
 - [ ] 配置
+- [ ] 路由的合理利用

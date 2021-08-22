@@ -2,6 +2,7 @@ import articleOrm from '../../orm/article'
 import { Op } from 'sequelize'
 import { Request } from 'express'
 import connection from '../../db'
+import env from '../../config'
 
 export interface ArtItem {
   id: number
@@ -47,10 +48,15 @@ export const queryArtChildren = (params: any): any => {
 }
 
 export const queryArticleList = (req: any): any => {
-  const { pn: pageIndex, ps: pageSize, level } = req.query
+  const { pn: pageIndex, ps: pageSize, level, tag = '' } = req.query
   const queryWhere: any = {}
   if (level !== undefined) {
     queryWhere.level = +level
+  }
+  if (env.labels.includes(tag)) {
+    queryWhere.tags = {
+      [Op.substring]: tag
+    }
   }
   queryWhere.state = {
     [Op.not]: [-1]
@@ -87,10 +93,13 @@ export const delArticle = (params: any): any => {
 
 // https://cloud.tencent.com/developer/article/1686101 全文检索
 export const queryFullText = (req: Request): any => {
-  const { q } = req.query
+  const { q, pn = 10, ps } = req.query
+  const pageIndex = Number(pn) || 1
+  const pageSize = Number(ps) || 10
+  const offset = (pageIndex - 1) * pageSize
   const searchField = 'title,content,id,tags,state,level,pid'
-  const matchField = 'content'
+  const matchField = 'content, title'
   const queryWhere = `MATCH (${matchField}) AGAINST ('${q}' IN BOOLEAN MODE) AND state not in (-1)`
-  const sql = `select ${searchField}, MATCH (${matchField}) AGAINST ('${q}') as score from art_page where ${queryWhere};`
+  const sql = `select SQL_CALC_FOUND_ROWS ${searchField}, MATCH (${matchField}) AGAINST ('${q}') as score from art_page where ${queryWhere} limit ${pageSize} offset ${offset};SELECT FOUND_ROWS();`
   return connection.promise().query(sql)
 }

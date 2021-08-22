@@ -7,6 +7,7 @@ import {
   ArtItem,
   queryFullText
 } from '../model/article'
+import env from '../../config'
 
 const getTrees = async (list: ArtItem[], levelLimit: number, res: any[] = []) => {
   if (levelLimit-- === 0) return
@@ -150,5 +151,13 @@ export async function search(req: Request, res: Response): Promise<void> {
   res.status(200).send({
     code: 0,
     data: data[0]
+  })
+}
+
+export function getLabels(req: Request, res: Response): void {
+  res.status(200).send({
+    code: 0,
+    data: env.labels,
+    msg: 'success'
   })
 }
