@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, MouseEvent } from 'react'
 import { SketchSquareFilled } from '@ant-design/icons'
 import { Input, Typography, Tag, message } from 'antd'
 import { mapStateToProps, mapDispatchToProps } from '../store/index'
@@ -28,8 +28,8 @@ const Nav: FC<NavProps> = props => {
     setSearchVal(val.trim())
   }
 
-  const onClick = (e: any) => {
-    const label = e.target.innerText
+  const onClick = (e: MouseEvent<HTMLButtonElement | HTMLElement>) => {
+    const label = (e.target as HTMLElement).innerText
     setReloadVal(label)
   }
 
@@ -57,6 +57,11 @@ const Nav: FC<NavProps> = props => {
         <li>
           <Paragraph>
             Press <Text keyboard>Option</Text>+<Text keyboard>E</Text> to edit Editor
+          </Paragraph>
+        </li>
+        <li>
+          <Paragraph>
+            Press <Text keyboard>Option</Text>+<Text keyboard>R</Text> to reset
           </Paragraph>
         </li>
         <li>

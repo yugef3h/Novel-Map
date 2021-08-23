@@ -16,12 +16,12 @@ import { FormModeMap, FormMode } from '../store/editor'
 export const CustomOption: FC<any> = (props): ReactElement => {
   const { onChange, editorState, childProps } = props
   const { initContent, setCanShow, setTitle, editor, setId, setPId, setLevel, setMode } = childProps
-  const { mode, artItem, canShow } = editor || {}
+  const { mode = FormMode.Create, artItem, canShow } = editor || {}
   const { title = '', id, level = 0, pid } = artItem || {}
   const modeText = useMemo(() => FormModeMap.get(mode), [mode])
 
   // 移除浏览器默认的 tab 事件
-  const onKeyDown = (e: any) => {
+  const onKeyDown = (e: any): void => {
     if (e.which === 9) {
       e.preventDefault()
     }

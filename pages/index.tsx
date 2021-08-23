@@ -125,7 +125,7 @@ const Home: FC<Custom> = (props): ReactElement => {
     )
   }
 
-  const loop = (list: ArtItem[]): any => {
+  const loop = (list: ArtItem[]) => {
     return list.map((_: ArtItem, k: number) => {
       const level = Number(_.level) || 0
       const children = _.children || []
