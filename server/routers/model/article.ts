@@ -48,14 +48,19 @@ export const queryArtChildren = (params: any): any => {
 }
 
 export const queryArticleList = (req: any): any => {
-  const { pn: pageIndex, ps: pageSize, level, tag = '' } = req.query
+  const { pn: pageIndex, ps: pageSize, level, tag = '', title = '' } = req.query
   const queryWhere: any = {}
   if (level !== undefined) {
     queryWhere.level = +level
   }
-  if (env.labels.includes(tag)) {
+  if (tag) {
     queryWhere.tags = {
       [Op.substring]: tag
+    }
+  }
+  if (title) {
+    queryWhere.title = {
+      [Op.substring]: title
     }
   }
   queryWhere.state = {

@@ -11,9 +11,13 @@ export const FormModeMap = new Map([
   [FormMode.Create, '新建'],
   [FormMode.Edit, '编辑']
 ])
+
+type Label = {
+  [prop: string]: string
+}
 export interface EditorItem {
   canShow: boolean
-  reloadVal: number | string
+  reloadVal: number | Label
   mode: FormMode
   focusTime: number
   searchVal: string
@@ -52,7 +56,8 @@ export const actionType: { [p: string]: string } = {
   setPId: 'SET_PID',
   setReloadVal: 'SET_RELOAD_TIME',
   setFocusTime: 'SET_FOCUS_TIME',
-  setSearchVal: 'SET_SEARCH_TIME'
+  setSearchVal: 'SET_SEARCH_TIME',
+  setLRU: 'SET_LRU'
 }
 
 const reducer = (state = defaultState, action: Action<any>): EditorItem => {

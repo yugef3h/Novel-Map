@@ -1,4 +1,4 @@
-import React, { FC, useEffect, MouseEvent } from 'react'
+import React, { FC, useEffect, MouseEvent, useState } from 'react'
 import { SketchSquareFilled } from '@ant-design/icons'
 import { Input, Typography, Tag, message } from 'antd'
 import { mapStateToProps, mapDispatchToProps } from '../store/index'
@@ -8,7 +8,7 @@ import { tagsColor } from '../utils'
 const { Paragraph, Text } = Typography
 const { Search } = Input
 
-type NavProps = Custom & {
+type NavProps = Partial<Custom> & {
   labels: string[]
 }
 
@@ -16,6 +16,7 @@ const Nav: FC<NavProps> = props => {
   const { setSearchVal, labels, setReloadVal } = props
   const { focusTime } = props.editor || {}
   const inputRef = React.useRef<any>(null)
+  const [history, setHistory] = useState([])
 
   const searchProps = {
     style: { width: '100%' },
@@ -28,15 +29,21 @@ const Nav: FC<NavProps> = props => {
     setSearchVal(val.trim())
   }
 
-  const onClick = (e: MouseEvent<HTMLButtonElement | HTMLElement>) => {
+  const onClick = (e: MouseEvent<HTMLButtonElement | HTMLElement>, type: string) => {
     const label = (e.target as HTMLElement).innerText
-    setReloadVal(label)
+    setReloadVal({
+      [type]: label
+    })
   }
 
   useEffect(() => {
-    inputRef.current!.focus({
-      cursor: 'all'
-    })
+    inputRef &&
+      inputRef.current.focus({
+        cursor: 'all'
+      })
+
+    const data = localStorage.getItem('lru_history')
+    data && setHistory(JSON.parse(data))
   }, [focusTime])
 
   return (
@@ -72,7 +79,15 @@ const Nav: FC<NavProps> = props => {
       </ul>
       <div className="novel-map__labels">
         {labels.map((l, i) => (
-          <Tag key={l} color={tagsColor(i)} onClick={onClick}>
+          <Tag key={l} color={tagsColor(i)} onClick={e => onClick(e, 'tag')}>
+            {l}
+          </Tag>
+        ))}
+      </div>
+      <br />
+      <div className="novel-map__last-edit">
+        {history.map((l, i) => (
+          <Tag key={l} color={tagsColor(i)} onClick={e => onClick(e, 'title')}>
             {l}
           </Tag>
         ))}

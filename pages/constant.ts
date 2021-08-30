@@ -13,14 +13,17 @@ export interface Custom {
   setId?: any
   setPId?: any
 
-  reloadVal?: number
-  setReloadVal?: any
+  reloadVal: number
+  setReloadVal: any
 
-  focusTime?: number
-  setFocusTime?: any
+  focusTime: number
+  setFocusTime: any
 
-  searchVal?: string
-  setSearchVal?: any
+  searchVal: string
+  setSearchVal: any
+
+  lru: string[]
+  setLRU: any
 }
 
 export interface Action<T> {

@@ -199,7 +199,8 @@
       margin-left: -25px;
     }
   }
-  &__labels {
+  &__labels,
+  &__last-edit {
     width: 250px;
     .ant-tag {
       margin-top: 10px;

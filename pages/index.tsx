@@ -28,7 +28,13 @@ const Home: FC<Custom> = (props): ReactElement => {
 
   const fetchListByPage = useCallback(() => {
     setLoading(true)
-    const novelQuery = `level=0&level_limit=${LEVEL_LIMIT}&tag=${reloadVal}`
+    let where = ''
+    if (reloadVal && typeof reloadVal !== 'number') {
+      const { title, tag } = reloadVal || {}
+      title && (where = `title=${title}&`)
+      tag && (where = `tag=${tag}&`)
+    }
+    const novelQuery = `${where}level=0&level_limit=${LEVEL_LIMIT}`
     fetch(`${baseUrl}/api/v1/article/query_list?pn=${currentPage}&ps=${PAGE_SIZE}&${novelQuery}`, {
       headers: {
         'Cache-Control': 'no-cache',
