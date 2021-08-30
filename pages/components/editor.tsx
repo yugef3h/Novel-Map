@@ -9,13 +9,25 @@ import { connect } from 'react-redux'
 import { mapDispatchToProps, mapStateToProps } from '../store'
 import { FormModeMap, FormMode } from '../store/editor'
 
+const maxCapacity = 6
+
 /**
  * 自定义 toolbar
  * @param param0
  */
 export const CustomOption: FC<any> = (props): ReactElement => {
   const { onChange, editorState, childProps } = props
-  const { initContent, setCanShow, setTitle, editor, setId, setPId, setLevel, setMode } = childProps
+  const {
+    initContent,
+    setCanShow,
+    setTitle,
+    editor,
+    setId,
+    setPId,
+    setLevel,
+    setMode,
+    setFocusTime
+  } = childProps
   const { mode = FormMode.Create, artItem, canShow } = editor || {}
   const { title = '', id, level = 0, pid } = artItem || {}
   const modeText = useMemo(() => FormModeMap.get(mode), [mode])
@@ -45,6 +57,22 @@ export const CustomOption: FC<any> = (props): ReactElement => {
   }, [])
 
   if (!editorState) return <></>
+
+  const setLRUCache = (t: string) => {
+    const data = localStorage.getItem('lru_history') || '[]'
+    if (data === '[]') {
+      localStorage.setItem('lru_history', JSON.stringify([title]))
+      setFocusTime()
+      return
+    }
+    if (data.indexOf(t) !== -1) return
+    const lruHistory = JSON.parse(data)
+    const l = lruHistory.length
+    if (l >= maxCapacity) lruHistory.shift()
+    lruHistory.push(t)
+    localStorage.setItem('lru_history', JSON.stringify(lruHistory))
+    setFocusTime()
+  }
 
   const addSubmitBtn = () => {
     const curContent = editorState.getCurrentContent()
@@ -95,6 +123,7 @@ export const CustomOption: FC<any> = (props): ReactElement => {
           setPId(undefined)
           setLevel(0)
           setMode(FormMode.Create)
+          setLRUCache(title)
         },
         err => {
           message.error(JSON.stringify(err))
