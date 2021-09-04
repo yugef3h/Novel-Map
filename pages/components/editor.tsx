@@ -86,19 +86,17 @@ export const CustomOption: FC<any> = (props): ReactElement => {
     // result
     const html = draftToHtml(convertToRaw(curContent))?.trim()
     const curTitle = title.trim()
-    if (!curTitle || html === '<p></p>') {
-      message.warning('标题 or 内容不能为空！')
-      return
-    }
+    if (!curTitle || html === '<p></p>') return message.warning('标题 or 内容不能为空！')
+    if (curTitle.length > 15) return message.warning('标题超过 15 个字符！')
     const url = id ? `${baseUrl}/api/v1/article/edit` : `${baseUrl}/api/v1/article/create`
     const data = id
       ? {
-          title,
+          title: curTitle,
           content: html,
           id
         }
       : {
-          title,
+          title: curTitle,
           content: html,
           pid,
           level
