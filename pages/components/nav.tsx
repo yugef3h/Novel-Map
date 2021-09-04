@@ -25,6 +25,7 @@ const Nav: FC<NavProps> = props => {
   const onSearch = (val: string) => {
     const v = val.trim()
     if (v.length === 1) return message.warning('字符长度至少为 2，请重新输入')
+    setReloadVal(+new Date())
     setSearchVal(val.trim())
   }
 
